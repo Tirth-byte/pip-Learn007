@@ -75,13 +75,13 @@ export default function LoginPage() {
     await new Promise(resolve => setTimeout(resolve, 1000));
     login({ name, email });
     toast("Welcome! Setting up your workspace...");
-    router.push("/dashboard");
+    router.push("/app");
   };
 
   const handleOAuth = (provider: string) => {
     toast(`Connecting to ${provider}...`);
     login({ name: `${provider} User`, email: `user@${provider.toLowerCase()}.com` });
-    router.push("/dashboard");
+    router.push("/app");
   };
 
   const handleLegal = (label: string) => {
