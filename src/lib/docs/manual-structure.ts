@@ -1,0 +1,81 @@
+import { ManualSectionItem } from "./types";
+
+export const STARTING_MANUAL_SECTIONS: ManualSectionItem[] = [
+  {
+    id: "01",
+    slug: "01-what-programming-actually-is",
+    title: "What Programming Actually Is",
+    status: "planned",
+    time: "5 min",
+  },
+  {
+    id: "02",
+    slug: "02-running-your-first-python-program",
+    title: "Running Your First Python Program",
+    status: "planned",
+    time: "5 min",
+  },
+  {
+    id: "03",
+    slug: "03-values-variables-types",
+    title: "Values, Variables & Types",
+    status: "planned",
+    time: "7 min",
+  },
+  {
+    id: "04",
+    slug: "04-input-output",
+    title: "Input & Output",
+    status: "available",
+    time: "15–20 min",
+  },
+  {
+    id: "05",
+    slug: "05-making-decisions",
+    title: "Making Decisions",
+    status: "planned",
+    time: "8 min",
+  },
+  {
+    id: "06",
+    slug: "06-repeating-work",
+    title: "Repeating Work",
+    status: "planned",
+    time: "8 min",
+  },
+  {
+    id: "07",
+    slug: "07-working-with-collections",
+    title: "Working With Collections",
+    status: "planned",
+    time: "10 min",
+  },
+  {
+    id: "08",
+    slug: "08-functions",
+    title: "Functions",
+    status: "planned",
+    time: "10 min",
+  },
+  {
+    id: "09",
+    slug: "09-errors-debugging",
+    title: "Errors & Debugging",
+    status: "planned",
+    time: "8 min",
+  },
+  {
+    id: "10",
+    slug: "10-modules-packages-reading-documentation",
+    title: "Modules, Packages & Reading Docs",
+    status: "planned",
+    time: "8 min",
+  },
+  {
+    id: "11",
+    slug: "11-how-to-start-building-software",
+    title: "How to Start Building Software",
+    status: "planned",
+    time: "5 min",
+  },
+];
