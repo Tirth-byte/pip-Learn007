@@ -1,20 +1,61 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { DocHeader } from "./doc-header";
 import { DocSidebar } from "./doc-sidebar";
 import { DocToc } from "./doc-toc";
 import { DocMetadataBanner } from "./doc-metadata-banner";
 import { DocArticleClient } from "./doc-article-client";
 import { DocChapterData } from "@/lib/docs/types";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useManualProgress } from "@/learning-state/manual-progress";
+import { ChevronLeft, ChevronRight, CheckCircle2, ArrowRight } from "lucide-react";
 
 interface DocReaderLayoutProps {
   chapter: DocChapterData;
+  routePrefix?: string; // Default is "/manual"
+  currentSlug?: string;
 }
 
-export function DocReaderLayout({ chapter }: DocReaderLayoutProps) {
+export function DocReaderLayout({
+  chapter,
+  routePrefix = "/manual",
+  currentSlug,
+}: DocReaderLayoutProps) {
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const {
+    isSectionCompleted,
+    markComplete,
+    setLastRead,
+    completedCount,
+    totalCount,
+  } = useManualProgress();
+
+  // Resolve current section slug from prop or fallback to section id match
+  const slug =
+    currentSlug ||
+    (chapter.metadata.section === "04"
+      ? "04-input-output"
+      : `section-${chapter.metadata.section}`);
+
+  const isCompleted = isSectionCompleted(slug);
+  const isLastSection = chapter.metadata.section === "11";
+
+  // When reading, record that this section was visited
+  useEffect(() => {
+    if (slug) {
+      setLastRead(slug);
+    }
+  }, [slug, setLastRead]);
+
+  const handleCompleteAndContinue = () => {
+    markComplete(slug);
+    if (chapter.nextSection) {
+      router.push(`${routePrefix}/${chapter.nextSection.slug}/`);
+    }
+  };
 
   return (
     <div className="doc-reader-root min-h-screen flex flex-col bg-background text-foreground selection:bg-primary/20 selection:text-foreground">
@@ -26,10 +67,13 @@ export function DocReaderLayout({ chapter }: DocReaderLayoutProps) {
 
       {/* Main Container */}
       <div className="flex-1 flex max-w-[1400px] w-full mx-auto justify-between">
-        {/* Desktop Left Sidebar: Compact curriculum navigation */}
+        {/* Desktop Left Sidebar: 11-section curriculum navigation */}
         <div className="hidden lg:block w-[230px] shrink-0 border-r border-border/70">
           <div className="sticky top-13 h-[calc(100vh-3.25rem)] overflow-y-auto">
-            <DocSidebar currentSectionId={chapter.metadata.section} />
+            <DocSidebar
+              currentSectionId={chapter.metadata.section}
+              routePrefix={routePrefix}
+            />
           </div>
         </div>
 
@@ -45,6 +89,7 @@ export function DocReaderLayout({ chapter }: DocReaderLayoutProps) {
               <DocSidebar
                 currentSectionId={chapter.metadata.section}
                 onNavigate={() => setIsSidebarOpen(false)}
+                routePrefix={routePrefix}
               />
             </div>
           </div>
@@ -63,34 +108,127 @@ export function DocReaderLayout({ chapter }: DocReaderLayoutProps) {
             {/* Rendered Markdown Prose */}
             <DocArticleClient htmlContent={chapter.htmlContent} />
 
+            {/* Section Completion Action Bar */}
+            <div className="auth-section-completion-bar mt-16">
+              {!isLastSection ? (
+                <>
+                  <div>
+                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Section Checkpoint
+                    </div>
+                    <div className="text-sm font-medium text-foreground mt-0.5">
+                      {isCompleted
+                        ? "Section understood and marked complete"
+                        : "Verified the examples in your terminal?"}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      Progress: {completedCount} of {totalCount} sections completed.
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    {!isCompleted ? (
+                      <button
+                        type="button"
+                        onClick={handleCompleteAndContinue}
+                        className="auth-primary-btn"
+                      >
+                        <CheckCircle2 className="size-4" />
+                        <span>Mark Complete & Next</span>
+                        <ArrowRight className="size-4" />
+                      </button>
+                    ) : chapter.nextSection ? (
+                      <Link
+                        href={`${routePrefix}/${chapter.nextSection.slug}/`}
+                        className="auth-primary-btn"
+                      >
+                        <span>Next Section</span>
+                        <ArrowRight className="size-4" />
+                      </Link>
+                    ) : null}
+                  </div>
+                </>
+              ) : (
+                /* Section 11 Final Handoff to Terminal Ledger */
+                <div className="w-full">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">
+                    <CheckCircle2 className="size-4" />
+                    <span>Final Foundation Section</span>
+                  </div>
+                  <div className="text-base font-bold text-foreground">
+                    You have completed the Starting Manual curriculum.
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1 max-w-xl leading-relaxed">
+                    You have built foundational mental models for Python variables, loops, data structures, functions, tracebacks, and documentation literacy. You are ready to start Project 1: Terminal Ledger.
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                    {!isCompleted ? (
+                      <button
+                        type="button"
+                        onClick={() => markComplete(slug)}
+                        className="auth-primary-btn"
+                      >
+                        <CheckCircle2 className="size-4" />
+                        <span>Mark Foundation Complete</span>
+                      </button>
+                    ) : (
+                      <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-medium px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">
+                        ✓ All 11 Sections Complete
+                      </span>
+                    )}
+
+                    <Link href="/home/" className="auth-secondary-btn">
+                      <span>Return to Home Workspace</span>
+                      <ArrowRight className="size-4" />
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Bottom Section Navigation */}
             <nav
               aria-label="Previous and next section navigation"
-              className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-sm"
+              className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-sm"
             >
               {chapter.prevSection ? (
-                <div className="w-full sm:w-auto flex flex-col text-left">
+                <Link
+                  href={`${routePrefix}/${chapter.prevSection.slug}/`}
+                  className="w-full sm:w-auto flex flex-col text-left group transition-colors"
+                >
                   <span className="text-xs text-muted-foreground/80 mb-1">Previous</span>
-                  <div className="text-muted-foreground/60 cursor-not-allowed flex items-center gap-1.5">
-                    <ChevronLeft className="h-4 w-4" />
-                    <span>{chapter.prevSection.title}</span>
+                  <div className="text-foreground group-hover:text-primary flex items-center gap-1.5 transition-colors">
+                    <ChevronLeft className="h-4 w-4 shrink-0 transition-transform group-hover:-translate-x-0.5" />
+                    <span className="truncate">{chapter.prevSection.title}</span>
                   </div>
-                </div>
+                </Link>
               ) : (
                 <div />
               )}
 
-              {chapter.nextSection && (
-                <div className="w-full sm:w-auto flex flex-col text-right ml-auto">
+              {chapter.nextSection ? (
+                <Link
+                  href={`${routePrefix}/${chapter.nextSection.slug}/`}
+                  className="w-full sm:w-auto flex flex-col text-right ml-auto group transition-colors"
+                >
                   <span className="text-xs text-muted-foreground/80 mb-1">Next Section</span>
-                  <div className="text-muted-foreground flex items-center gap-1.5 justify-end">
-                    <span>{chapter.nextSection.title}</span>
-                    <ChevronRight className="h-4 w-4" />
+                  <div className="text-foreground group-hover:text-primary flex items-center gap-1.5 justify-end transition-colors">
+                    <span className="truncate">{chapter.nextSection.title}</span>
+                    <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
                   </div>
-                  <span className="text-[10px] text-muted-foreground/60 uppercase font-mono mt-0.5">
-                    Coming Next
-                  </span>
-                </div>
+                </Link>
+              ) : (
+                <Link
+                  href="/home/"
+                  className="w-full sm:w-auto flex flex-col text-right ml-auto group transition-colors"
+                >
+                  <span className="text-xs text-muted-foreground/80 mb-1">Curriculum Complete</span>
+                  <div className="text-foreground group-hover:text-primary flex items-center gap-1.5 justify-end transition-colors font-medium">
+                    <span>Return to Home Workspace</span>
+                    <ArrowRight className="h-4 w-4 shrink-0" />
+                  </div>
+                </Link>
               )}
             </nav>
           </article>

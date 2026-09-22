@@ -1,0 +1,196 @@
+/* PipLearn Authenticated UI Scoped Styles */
+
+.piplearn-auth-shell {
+  min-height: 100vh;
+  display: flex;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Desktop Navigation Rail */
+.auth-nav-rail {
+  width: 60px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background-color: var(--sidebar, var(--background));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 0.5rem;
+  z-index: 30;
+  user-select: none;
+}
+
+.auth-nav-item {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+  transition: all 140ms ease;
+  position: relative;
+  text-decoration: none;
+}
+
+.auth-nav-item:hover {
+  color: var(--foreground);
+  background-color: var(--accent);
+}
+
+.auth-nav-item:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.auth-nav-item.active {
+  color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.auth-nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background-color: var(--primary);
+}
+
+.auth-nav-label {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+  line-height: 1;
+}
+
+/* Quiet Home Surface */
+.auth-home-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .auth-home-container {
+    padding: 3.5rem 2.5rem 6rem;
+  }
+}
+
+.auth-card-dominant {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-color: var(--card);
+  padding: 2rem;
+  position: relative;
+  transition: border-color 150ms ease;
+}
+
+.auth-card-dominant:hover {
+  border-color: color-mix(in srgb, var(--border) 60%, var(--primary));
+}
+
+.auth-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: var(--foreground);
+  color: var(--background);
+  transition: opacity 120ms ease, transform 120ms ease;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+}
+
+.auth-primary-btn:hover {
+  opacity: 0.92;
+}
+
+.auth-primary-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.auth-primary-btn:active {
+  transform: translateY(1px);
+}
+
+.auth-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background-color: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  transition: background-color 120ms ease, border-color 120ms ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.auth-secondary-btn:hover {
+  background-color: var(--accent);
+  border-color: var(--muted-foreground);
+}
+
+.auth-secondary-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Subtle Roadmap Rows */
+.auth-roadmap-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.875rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: all 120ms ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.auth-roadmap-row:hover {
+  background-color: var(--accent);
+  border-color: var(--border);
+}
+
+/* Section Completion Bar in Doc Reader */
+.auth-section-completion-bar {
+  margin-top: 3.5rem;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: color-mix(in srgb, var(--card) 95%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .auth-section-completion-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

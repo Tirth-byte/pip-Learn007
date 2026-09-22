@@ -18,6 +18,7 @@ export interface ManualSectionItem {
   title: string;
   status: "available" | "planned";
   time?: string;
+  summary?: string;
 }
 
 export interface DocChapterData {

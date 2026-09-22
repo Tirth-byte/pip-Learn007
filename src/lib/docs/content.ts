@@ -5,6 +5,7 @@ import Prism from "prismjs";
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-bash";
 import { DocChapterData, DocMetadata, TocItem } from "./types";
+import { getNextSection, getPrevSection, getSectionBySlug } from "./manual-structure";
 
 export function slugifyHeading(text: string): string {
   return text
@@ -102,15 +103,19 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;");
 }
 
-export function loadSection04Content(): DocChapterData {
+export function loadSectionContent(slug: string): DocChapterData | null {
   const filePath = path.join(
     process.cwd(),
     "Brain",
     "content",
     "python",
     "starting-manual",
-    "04-input-output.md"
+    `${slug}.md`
   );
+
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
 
   const raw = fs.readFileSync(filePath, "utf-8");
   const { metadata, markdown } = parseFrontmatter(raw);
@@ -139,22 +144,22 @@ export function loadSection04Content(): DocChapterData {
       // The H1 is rendered custom in the article header
       return "";
     }
-    const slug = slugifyHeading(text);
+    const headingSlug = slugifyHeading(text);
     const parsedInline = this.parser.parseInline(tokens);
 
     if (depth === 2) {
       return `
-        <h2 id="${slug}" class="doc-h2 group scroll-mt-24">
+        <h2 id="${headingSlug}" class="doc-h2 group scroll-mt-24">
           <span class="doc-heading-text">${parsedInline}</span>
-          <a href="#${slug}" class="doc-anchor" aria-label="Direct link to ${escapeHtml(text)}">#</a>
+          <a href="#${headingSlug}" class="doc-anchor" aria-label="Direct link to ${escapeHtml(text)}">#</a>
         </h2>
       `;
     }
 
     return `
-      <h3 id="${slug}" class="doc-h3 group scroll-mt-24">
+      <h3 id="${headingSlug}" class="doc-h3 group scroll-mt-24">
         <span class="doc-heading-text">${parsedInline}</span>
-        <a href="#${slug}" class="doc-anchor" aria-label="Direct link to ${escapeHtml(text)}">#</a>
+        <a href="#${headingSlug}" class="doc-anchor" aria-label="Direct link to ${escapeHtml(text)}">#</a>
       </h3>
     `;
   };
@@ -216,10 +221,16 @@ export function loadSection04Content(): DocChapterData {
   renderer.link = function ({ href, title, tokens }) {
     const text = this.parser.parseInline(tokens);
     const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
-    
-    // Check if it's an internal doc link like 05-making-decisions.md
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+    // Internal link to another manual markdown file
     if (href.endsWith(".md")) {
-      return `<span class="doc-future-link" ${titleAttr}>${text} <span class="doc-coming-tag">Coming Next</span></span>`;
+      const targetSlug = href.replace(/^\.\//, "").replace(/\.md$/, "");
+      const targetSection = getSectionBySlug(targetSlug);
+      if (targetSection) {
+        return `<a href="${basePath}/manual/${targetSlug}/" class="doc-link"${titleAttr}>${text}</a>`;
+      }
+      return `<span class="doc-future-link" ${titleAttr}>${text} <span class="doc-coming-tag">Section</span></span>`;
     }
 
     const isExternal = href.startsWith("http://") || href.startsWith("https://");
@@ -229,17 +240,32 @@ export function loadSection04Content(): DocChapterData {
 
   const htmlContent = marked.parse(markdown, { renderer, gfm: true }) as string;
 
+  const prev = getPrevSection(slug);
+  const next = getNextSection(slug);
+
   return {
     metadata,
     htmlContent,
     toc,
-    prevSection: {
-      title: "03 — Values, Variables & Types",
-      slug: "03-values-variables-types",
-    },
-    nextSection: {
-      title: "05 — Making Decisions",
-      slug: "05-making-decisions",
-    },
+    prevSection: prev
+      ? {
+          title: `${prev.id} — ${prev.title}`,
+          slug: prev.slug,
+        }
+      : undefined,
+    nextSection: next
+      ? {
+          title: `${next.id} — ${next.title}`,
+          slug: next.slug,
+        }
+      : undefined,
   };
+}
+
+export function loadSection04Content(): DocChapterData {
+  const chapter = loadSectionContent("04-input-output");
+  if (!chapter) {
+    throw new Error("Section 04 content not found in Brain/content/python/starting-manual/04-input-output.md");
+  }
+  return chapter;
 }

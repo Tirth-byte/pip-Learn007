@@ -1,41 +1,16 @@
 "use client";
 
-import React, { useSyncExternalStore } from "react";
+import React from "react";
 import Link from "next/link";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { ThemeToggle } from "@/components/shell/theme-toggle";
 
 interface DocHeaderProps {
   onToggleSidebar?: () => void;
   isSidebarOpen?: boolean;
 }
 
-function subscribeToTheme(callback: () => void) {
-  const observer = new MutationObserver(callback);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["class"],
-  });
-  return () => observer.disconnect();
-}
-
 export function DocHeader({ onToggleSidebar, isSidebarOpen }: DocHeaderProps) {
-  const isDark = useSyncExternalStore(
-    subscribeToTheme,
-    () => document.documentElement.classList.contains("dark"),
-    () => false
-  );
-
-  const toggleTheme = () => {
-    const isCurrentlyDark = document.documentElement.classList.contains("dark");
-    if (isCurrentlyDark) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("piplearn_theme", "light");
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("piplearn_theme", "dark");
-    }
-  };
-
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-xs">
       <div className="flex h-13 items-center justify-between px-4 sm:px-6">
@@ -54,7 +29,7 @@ export function DocHeader({ onToggleSidebar, isSidebarOpen }: DocHeaderProps) {
 
           <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm">
             <Link
-              href="/"
+              href="/home/"
               className="font-semibold tracking-tight text-foreground transition-colors hover:text-primary"
             >
               PipLearn
@@ -68,15 +43,7 @@ export function DocHeader({ onToggleSidebar, isSidebarOpen }: DocHeaderProps) {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-muted/40 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-            title={isDark ? "Light theme" : "Dark theme"}
-          >
-            {isDark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
-          </button>
+          <ThemeToggle align="bottom" />
         </div>
       </div>
     </header>
