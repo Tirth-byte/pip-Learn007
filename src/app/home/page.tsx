@@ -4,20 +4,35 @@ import React from "react";
 import Link from "next/link";
 import { AuthShell } from "@/components/shell/auth-shell";
 import { useManualProgress } from "@/learning-state/manual-progress";
+import { useTerminalLedgerProgress } from "@/learning-state/terminal-ledger-progress";
 import { STARTING_MANUAL_SECTIONS } from "@/lib/docs/manual-structure";
-import { ArrowRight, CheckCircle2, Circle, Clock } from "lucide-react";
+import { TERMINAL_LEDGER_PROJECT, TERMINAL_LEDGER_PHASES } from "@/lib/projects/terminal-ledger/structure";
+import { ArrowRight, CheckCircle2, Circle, Clock, Terminal } from "lucide-react";
 
 export default function HomePage() {
   const {
-    completedCount,
-    totalCount,
-    isComplete,
+    completedCount: manualCompletedCount,
+    totalCount: manualTotalCount,
+    isComplete: isManualComplete,
     resumeSection,
-    isSectionCompleted,
+    isSectionCompleted: isManualSectionCompleted,
   } = useManualProgress();
 
-  const progressPercentage = Math.round((completedCount / totalCount) * 100);
-  const isBrandNew = completedCount === 0;
+  const {
+    isStarted: isProjectStarted,
+    isCompleted: isProjectCompleted,
+    currentPhase,
+    completedPhasesCount,
+    totalPhasesCount,
+    isPhaseCompleted,
+    activeBlocker,
+    startProject,
+  } = useTerminalLedgerProgress();
+
+  const manualProgressPercentage = Math.round(
+    (manualCompletedCount / manualTotalCount) * 100
+  );
+  const isBrandNewManual = manualCompletedCount === 0;
 
   return (
     <AuthShell activeItem="home">
@@ -26,27 +41,145 @@ export default function HomePage() {
           {/* Header */}
           <div className="mb-8">
             <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground/80 font-medium">
-              Python Masterclass · Foundation
+              Python Masterclass · {isProjectStarted ? "Active Workspace" : "Foundations"}
             </span>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-1">
-              Starting Manual
+              {isProjectStarted ? "Terminal Ledger" : "Starting Manual"}
             </h1>
             <p className="text-sm text-muted-foreground mt-1.5 max-w-xl">
-              Build your mental models through concise terminal experiments before advancing to real software projects.
+              {isProjectStarted
+                ? "Your active local software project. Write code in your own editor and terminal."
+                : "Build your mental models through concise terminal experiments before advancing to real software projects."}
             </p>
           </div>
 
           {/* ONE Dominant Action Card */}
           <div className="auth-card-dominant mb-10 shadow-xs">
-            {!isComplete ? (
+            {isProjectStarted ? (
+              /* State 3: Project Started -> Terminal Ledger Phase Continuation Dominates */
+              <div>
+                {activeBlocker?.type === "CHECKPOINT_REQUIRED" ? (
+                  /* Checkpoint Due State: progression paused pending human review */
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-2">
+                      <span className="size-2 rounded-full bg-amber-500 animate-pulse" />
+                      <span>Mentor Checkpoint {activeBlocker.checkpointNumber} Due</span>
+                    </div>
+
+                    <div className="text-xs font-mono text-muted-foreground mb-1">
+                      Terminal Ledger · Progression Paused
+                    </div>
+
+                    <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
+                      Phase {activeBlocker.phaseNumber} Defense Required
+                    </h2>
+
+                    <p className="text-sm text-muted-foreground/90 mt-2 mb-4 leading-relaxed max-w-2xl">
+                      Phase {activeBlocker.phaseNumber} is verified and complete. Progression is paused pending a conversational defense with a mentor (Tirth, Darsh, or Raj) before advancing.
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mb-6">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="size-3.5" />
+                        <span>~30 min conversational defense</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Terminal className="size-3.5" />
+                        <span>Evidence & architecture review</span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Link
+                        href={`/projects/terminal-ledger/phases/phase-0${activeBlocker.phaseNumber}/`}
+                        className="auth-primary-btn"
+                      >
+                        <span>View Checkpoint {activeBlocker.checkpointNumber} Agenda</span>
+                        <ArrowRight className="size-4" />
+                      </Link>
+
+                      <Link
+                        href="/projects/terminal-ledger/"
+                        className="auth-secondary-btn"
+                      >
+                        <span>Project Overview</span>
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  /* Normal Phase Continuation State */
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                      <span className="size-2 rounded-full bg-primary animate-pulse" />
+                      <span>
+                        {isProjectCompleted
+                          ? "Project Complete"
+                          : `Active Project · Phase ${currentPhase.number} of ${totalPhasesCount}`}
+                      </span>
+                    </div>
+
+                    <div className="text-xs font-mono text-muted-foreground mb-1">
+                      Terminal Ledger · {TERMINAL_LEDGER_PROJECT.language}
+                    </div>
+
+                    <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
+                      {currentPhase.title}
+                    </h2>
+
+                    <p className="text-sm text-muted-foreground/90 mt-2 mb-4 leading-relaxed max-w-2xl">
+                      {currentPhase.summary}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mb-6">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="size-3.5" />
+                        <span>{currentPhase.estimatedTime}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Terminal className="size-3.5" />
+                        <span>Local terminal execution</span>
+                      </div>
+                      {currentPhase.standalonePacks.length > 0 && (
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-muted-foreground/60">·</span>
+                          <span>{currentPhase.standalonePacks.length} Knowledge Packs unlocked</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Link
+                        href={`/projects/terminal-ledger/phases/${currentPhase.slug}/`}
+                        className="auth-primary-btn"
+                      >
+                        <span>
+                          {isProjectCompleted
+                            ? "Review Terminal Ledger"
+                            : `Continue Building Phase ${currentPhase.number}`}
+                        </span>
+                        <ArrowRight className="size-4" />
+                      </Link>
+
+                      <Link
+                        href="/projects/terminal-ledger/"
+                        className="auth-secondary-btn"
+                      >
+                        <span>Project Overview</span>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : !isManualComplete ? (
+              /* State 1: Manual in Progress -> Next Section Dominates */
               <div>
                 <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-2">
                   <span className="size-2 rounded-full bg-primary animate-pulse" />
-                  <span>{isBrandNew ? "Start Here" : "Continue Learning"}</span>
+                  <span>{isBrandNewManual ? "Start Here" : "Continue Learning"}</span>
                 </div>
 
                 <div className="text-xs font-mono text-muted-foreground mb-1">
-                  Section {resumeSection.id} of {totalCount}
+                  Section {resumeSection.id} of {manualTotalCount}
                 </div>
 
                 <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
@@ -79,7 +212,7 @@ export default function HomePage() {
                     className="auth-primary-btn"
                   >
                     <span>
-                      {isBrandNew
+                      {isBrandNewManual
                         ? `Begin Section ${resumeSection.id}`
                         : `Continue Section ${resumeSection.id}`}
                     </span>
@@ -88,6 +221,7 @@ export default function HomePage() {
                 </div>
               </div>
             ) : (
+              /* State 2: Manual Complete, Project Not Started -> Start Terminal Ledger Dominates */
               <div>
                 <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
                   <CheckCircle2 className="size-4" />
@@ -116,106 +250,171 @@ export default function HomePage() {
 
                 <div className="flex flex-wrap items-center gap-3">
                   <Link
+                    href="/projects/terminal-ledger/"
+                    onClick={() => startProject()}
+                    className="auth-primary-btn"
+                  >
+                    <span>Start Project: Terminal Ledger</span>
+                    <ArrowRight className="size-4" />
+                  </Link>
+
+                  <Link
                     href="/manual/01-what-programming-actually-is/"
                     className="auth-secondary-btn"
                   >
                     <span>Review Starting Manual</span>
-                  </Link>
-                  <Link
-                    href="/projects/"
-                    className="auth-primary-btn"
-                  >
-                    <span>View Projects</span>
-                    <ArrowRight className="size-4" />
                   </Link>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Quiet Progress Bar & Section Roadmap */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-foreground tracking-tight uppercase tracking-wider text-[11px]">
-                Manual Curriculum
-              </span>
-              <span className="font-mono text-muted-foreground">
-                {completedCount} of {totalCount} Completed ({progressPercentage}%)
-              </span>
+          {/* Quiet Progress Bar & Roadmap */}
+          {isProjectStarted ? (
+            /* Quiet Terminal Ledger Roadmap */
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-foreground tracking-tight uppercase tracking-wider text-[11px]">
+                  Terminal Ledger Roadmap
+                </span>
+                <span className="font-mono text-muted-foreground">
+                  {completedPhasesCount} of {totalPhasesCount} Phases Complete
+                </span>
+              </div>
+
+              {/* Restrained progress line */}
+              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
+                  style={{
+                    width: `${Math.max(
+                      (completedPhasesCount / totalPhasesCount) * 100,
+                      isProjectStarted ? 11 : 0
+                    )}%`,
+                  }}
+                />
+              </div>
+
+              {/* Quiet Phase List */}
+              <div className="pt-2 divide-y divide-border/60 rounded-lg border border-border/70 bg-card/50 overflow-hidden">
+                {TERMINAL_LEDGER_PHASES.map((p) => {
+                  const isDone = isPhaseCompleted(p.slug);
+                  const isCur = currentPhase.slug === p.slug;
+
+                  return (
+                    <Link
+                      key={p.slug}
+                      href={`/projects/terminal-ledger/phases/${p.slug}/`}
+                      className={`flex items-center justify-between p-3.5 text-xs transition-colors hover:bg-muted/40 ${
+                        isCur ? "bg-muted/30 font-medium text-foreground" : "text-muted-foreground"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        {isDone ? (
+                          <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        ) : isCur ? (
+                          <div className="size-4 rounded-full border-2 border-primary flex items-center justify-center shrink-0">
+                            <div className="size-1.5 rounded-full bg-primary" />
+                          </div>
+                        ) : (
+                          <Circle className="size-4 text-muted-foreground/40 shrink-0" />
+                        )}
+                        <span className={isDone ? "text-foreground font-medium" : isCur ? "text-primary font-medium" : ""}>
+                          Phase {p.number}: {p.title}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3 font-mono text-[11px] text-muted-foreground">
+                        {p.isCheckpointFollowed && (
+                          <span
+                            className={
+                              activeBlocker?.checkpointNumber === p.checkpointNumber
+                                ? "text-amber-600 dark:text-amber-400 font-semibold"
+                                : "text-primary/90 font-medium"
+                            }
+                          >
+                            Checkpoint {p.checkpointNumber}
+                            {activeBlocker?.checkpointNumber === p.checkpointNumber ? " Due" : ""}
+                          </span>
+                        )}
+                        <span>{p.estimatedTime}</span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Secondary link back to Starting Manual */}
+              <div className="pt-4 text-xs text-muted-foreground flex items-center justify-between border-t border-border/60">
+                <span>Foundational Starting Manual (11/11 complete)</span>
+                <Link
+                  href="/manual/01-what-programming-actually-is/"
+                  className="text-primary hover:underline"
+                >
+                  Review Manual
+                </Link>
+              </div>
             </div>
+          ) : (
+            /* Starting Manual Curriculum List */
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-foreground tracking-tight uppercase tracking-wider text-[11px]">
+                  Manual Curriculum
+                </span>
+                <span className="font-mono text-muted-foreground">
+                  {manualCompletedCount} of {manualTotalCount} Completed ({manualProgressPercentage}%)
+                </span>
+              </div>
 
-            {/* Restrained progress line */}
-            <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-              <div
-                className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
-                style={{ width: `${progressPercentage}%` }}
-              />
+              {/* Restrained progress line */}
+              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
+                  style={{ width: `${manualProgressPercentage}%` }}
+                />
+              </div>
+
+              {/* Quiet section list */}
+              <div className="pt-2 divide-y divide-border/60 rounded-lg border border-border/70 bg-card/50 overflow-hidden">
+                {STARTING_MANUAL_SECTIONS.map((section) => {
+                  const isDone = isManualSectionCompleted(section.slug);
+                  const isCurrent = resumeSection.slug === section.slug && !isManualComplete;
+
+                  return (
+                    <Link
+                      key={section.slug}
+                      href={`/manual/${section.slug}/`}
+                      className={`flex items-center justify-between p-3.5 text-xs transition-colors hover:bg-muted/40 ${
+                        isCurrent
+                          ? "bg-muted/30 font-medium text-foreground"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        {isDone ? (
+                          <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        ) : isCurrent ? (
+                          <div className="size-4 rounded-full border-2 border-primary flex items-center justify-center shrink-0">
+                            <div className="size-1.5 rounded-full bg-primary" />
+                          </div>
+                        ) : (
+                          <Circle className="size-4 text-muted-foreground/40 shrink-0" />
+                        )}
+                        <span className={isDone ? "text-foreground font-medium" : isCurrent ? "text-primary font-medium" : ""}>
+                          {section.id} — {section.title}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
+                        {section.time && <span>{section.time}</span>}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-
-            {/* List of 11 Sections */}
-            <div className="border border-border rounded-lg divide-y divide-border overflow-hidden bg-card mt-3">
-              {STARTING_MANUAL_SECTIONS.map((section) => {
-                const isCompleted = isSectionCompleted(section.slug);
-                const isCurrent = !isComplete && resumeSection.slug === section.slug;
-
-                return (
-                  <Link
-                    key={section.id}
-                    href={`/manual/${section.slug}/`}
-                    className="auth-roadmap-row group"
-                  >
-                    <div className="flex items-center gap-3 min-w-0 pr-3">
-                      {isCompleted ? (
-                        <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                      ) : isCurrent ? (
-                        <Circle className="size-4 text-primary fill-primary/20 shrink-0" />
-                      ) : (
-                        <Circle className="size-4 text-muted-foreground/40 shrink-0" />
-                      )}
-
-                      <span className="font-mono text-xs text-muted-foreground/80 shrink-0">
-                        {section.id}
-                      </span>
-
-                      <span
-                        className={`text-sm truncate transition-colors ${
-                          isCurrent
-                            ? "font-semibold text-foreground"
-                            : isCompleted
-                            ? "text-muted-foreground group-hover:text-foreground"
-                            : "text-foreground group-hover:text-primary"
-                        }`}
-                      >
-                        {section.title}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3 shrink-0">
-                      {section.time && (
-                        <span className="text-[11px] font-mono text-muted-foreground/70 hidden sm:inline-block">
-                          {section.time}
-                        </span>
-                      )}
-
-                      {isCurrent ? (
-                        <span className="text-[10px] font-medium font-mono uppercase px-2 py-0.5 rounded bg-primary/10 text-primary">
-                          Up Next
-                        </span>
-                      ) : isCompleted ? (
-                        <span className="text-[10px] font-medium font-mono uppercase px-2 py-0.5 rounded bg-muted text-muted-foreground">
-                          Read
-                        </span>
-                      ) : (
-                        <span className="text-[10px] font-medium font-mono uppercase px-2 py-0.5 rounded text-muted-foreground/60">
-                          Ready
-                        </span>
-                      )}
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
+          )}
         </div>
       </main>
     </AuthShell>
