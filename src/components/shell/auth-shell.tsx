@@ -7,6 +7,7 @@ import {
   Home,
   BookOpen,
   FolderKanban,
+  NotebookPen,
   Menu,
   X,
 } from "lucide-react";
@@ -17,16 +18,17 @@ import "@/styles/authenticated.css";
 
 interface AuthShellProps {
   children: React.ReactNode;
-  activeItem?: "home" | "learn" | "projects";
+  activeItem?: "home" | "learn" | "projects" | "journal";
 }
 
 function PipLearnNavLogo() {
   return (
     <svg viewBox="0 0 48 48" className="size-7" fill="none" aria-label="PipLearn Home">
+      {/* PipLearn 3-Tier Layered Diamond Logo */}
       {/* Top Layer */}
-      <path d="M24 8 L38 16 L24 24 L10 16 Z" fill="currentColor" className="text-foreground" />
+      <path d="M24 7 L38 15 L24 23 L10 15 Z" fill="currentColor" className="text-primary" />
       {/* Middle Layer */}
-      <path d="M10 21 L24 29 L38 21 L38 24.5 L24 32.5 L10 24.5 Z" fill="#0066FF" />
+      <path d="M10 22 L24 30 L38 22 L38 25.5 L24 33.5 L10 25.5 Z" fill="currentColor" className="text-primary/75" />
       {/* Bottom Layer */}
       <path d="M10 29.5 L24 37.5 L38 29.5 L38 33 L24 41 L10 33 Z" fill="currentColor" className="text-foreground/80" />
     </svg>
@@ -46,6 +48,8 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
       ? "learn"
       : pathname.startsWith("/projects")
       ? "projects"
+      : pathname.startsWith("/journal")
+      ? "journal"
       : "home");
 
   const learnHref = `/manual/${resumeSection.slug}/`;
@@ -138,6 +142,19 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
                   <FolderKanban className="h-4 w-4" />
                   <span>Projects</span>
                 </Link>
+
+                <Link
+                  href="/journal/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                    currentActive === "journal"
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  <NotebookPen className="h-4 w-4" />
+                  <span>Journal</span>
+                </Link>
               </nav>
             </div>
 
@@ -203,6 +220,17 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
             >
               <FolderKanban className="h-4 w-4" />
               <span className="auth-nav-label">Projects</span>
+            </Link>
+
+            <Link
+              href="/journal/"
+              className={`auth-nav-item ${currentActive === "journal" ? "active" : ""}`}
+              aria-label="Journal"
+              aria-current={currentActive === "journal" ? "page" : undefined}
+              title="Problem Journal"
+            >
+              <NotebookPen className="h-4 w-4" />
+              <span className="auth-nav-label">Journal</span>
             </Link>
           </nav>
         </div>

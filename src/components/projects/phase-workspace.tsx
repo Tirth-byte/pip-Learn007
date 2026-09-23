@@ -11,13 +11,18 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  NotebookPen,
+  Compass,
 } from "lucide-react";
 import { PhaseMilestoneData, KnowledgePackData } from "@/lib/projects/terminal-ledger/types";
 import { TERMINAL_LEDGER_PHASES } from "@/lib/projects/terminal-ledger/structure";
 import { DocArticleClient } from "@/components/docs/doc-article-client";
 import { KnowledgePackDrawer } from "./knowledge-pack-drawer";
 import { MentorCheckpointBanner } from "./mentor-checkpoint-banner";
+import { ProblemJournalDrawer } from "./problem-journal-drawer";
+import { HelpLadderDrawer } from "./help-ladder-drawer";
 import { useTerminalLedgerProgress } from "@/learning-state/terminal-ledger-progress";
+import { useProblemJournal } from "@/learning-state/problem-journal";
 
 interface PhaseWorkspaceProps {
   milestoneData: PhaseMilestoneData;
@@ -53,6 +58,40 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
 
   // Selected knowledge pack to display in drawer
   const [activePack, setActivePack] = useState<KnowledgePackData | null>(null);
+
+  // Struggle support drawers state
+  const [isJournalOpen, setIsJournalOpen] = useState(false);
+  const [isHelpLadderOpen, setIsHelpLadderOpen] = useState(false);
+
+  const journalEntries = useProblemJournal();
+  const currentPhaseDraft = journalEntries.find(
+    (e) => e.project === "terminal-ledger" && e.phase === phase.slug && e.status === "draft"
+  );
+
+  const handleOpenHelpLadder = () => {
+    setActivePack(null);
+    setIsJournalOpen(false);
+    setIsHelpLadderOpen(true);
+  };
+
+  const handleOpenJournal = () => {
+    setActivePack(null);
+    setIsHelpLadderOpen(false);
+    setIsJournalOpen(true);
+  };
+
+  const handleOpenKnowledgePackFromHelp = (packSlug: string) => {
+    setIsHelpLadderOpen(false);
+    const found = knowledgePacks.find((p) => p.slug === packSlug || p.id === packSlug);
+    if (found) {
+      setActivePack(found);
+    }
+  };
+
+  const handleOpenJournalFromHelp = () => {
+    setIsHelpLadderOpen(false);
+    setIsJournalOpen(true);
+  };
 
   // Verification checklist state (session/interactive)
   const [checkedItems, setCheckedItems] = useState<Record<number, boolean>>({});
@@ -159,14 +198,41 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
               {phase.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mt-3">
-              <div className="flex items-center gap-1.5">
-                <Clock className="size-3.5" />
-                <span>Estimated: {phase.estimatedTime}</span>
+            <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-border/40">
+              <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <Clock className="size-3.5" />
+                  <span>Estimated: {phase.estimatedTime}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-muted-foreground/60">·</span>
+                  <span>Prerequisites: {phase.prerequisites}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-muted-foreground/60">·</span>
-                <span>Prerequisites: {phase.prerequisites}</span>
+
+              {/* Quiet Struggle Support Actions */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleOpenJournal}
+                  className="auth-secondary-btn py-1 px-2.5 text-xs inline-flex items-center gap-1.5"
+                  title="Open Problem Journal"
+                >
+                  <NotebookPen className="size-3.5" />
+                  <span>Problem Journal</span>
+                  {currentPhaseDraft && (
+                    <span className="size-1.5 rounded-full bg-amber-500" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOpenHelpLadder}
+                  className="auth-secondary-btn py-1 px-2.5 text-xs inline-flex items-center gap-1.5 text-primary border-primary/30 hover:border-primary/60"
+                  title="Get Unstuck via evidence-gated Help Ladder"
+                >
+                  <Compass className="size-3.5" />
+                  <span>Get Unstuck</span>
+                </button>
               </div>
             </div>
           </div>
@@ -315,9 +381,47 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
           </nav>
         </main>
 
-        {/* Right Aside: Contextual Knowledge Packs & Local Workstation */}
+        {/* Right Aside: Struggle Support, Contextual Knowledge Packs & Local Workstation */}
         <aside className="w-full lg:w-80 shrink-0 space-y-6">
           <div className="sticky top-20 space-y-6">
+            {/* Struggle & Debugging Support Card */}
+            <div className="p-5 rounded-xl border border-border bg-card shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Compass className="size-4 text-primary" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-foreground">
+                    Struggle Support
+                  </span>
+                </div>
+                {currentPhaseDraft && (
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                    Draft Active
+                  </span>
+                )}
+              </div>
+              <p className="text-[11.5px] text-muted-foreground leading-relaxed">
+                Struggle is where durable understanding forms. Observe concrete evidence before escalating.
+              </p>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={handleOpenJournal}
+                  className="auth-secondary-btn py-2 px-2 text-xs justify-center flex items-center gap-1.5"
+                >
+                  <NotebookPen className="size-3.5" />
+                  <span>Problem Journal</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOpenHelpLadder}
+                  className="auth-secondary-btn py-2 px-2 text-xs justify-center flex items-center gap-1.5 text-primary border-primary/30 hover:border-primary/60"
+                >
+                  <Compass className="size-3.5" />
+                  <span>Get Unstuck</span>
+                </button>
+              </div>
+            </div>
+
             {/* Knowledge Packs Card */}
             <div className="p-5 rounded-xl border border-border bg-card shadow-xs">
               <div className="flex items-center justify-between mb-3">
@@ -391,6 +495,28 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
         pack={activePack}
         isOpen={Boolean(activePack)}
         onClose={() => setActivePack(null)}
+      />
+
+      {/* Slide-over Problem Journal Drawer */}
+      <ProblemJournalDrawer
+        isOpen={isJournalOpen}
+        onClose={() => setIsJournalOpen(false)}
+        projectSlug="terminal-ledger"
+        phaseSlug={phase.slug}
+        phaseTitle={phase.title}
+        phaseNumber={phase.number}
+      />
+
+      {/* Slide-over Help Ladder Drawer */}
+      <HelpLadderDrawer
+        isOpen={isHelpLadderOpen}
+        onClose={() => setIsHelpLadderOpen(false)}
+        projectSlug="terminal-ledger"
+        phaseSlug={phase.slug}
+        phaseTitle={phase.title}
+        phaseNumber={phase.number}
+        onOpenJournal={handleOpenJournalFromHelp}
+        onOpenKnowledgePack={handleOpenKnowledgePackFromHelp}
       />
     </div>
   );
