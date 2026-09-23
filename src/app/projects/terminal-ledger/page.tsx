@@ -25,6 +25,8 @@ export default function TerminalLedgerOverviewPage() {
   const {
     isStarted,
     isCompleted,
+    isReadyForRetrospective,
+    activeBlocker,
     currentPhase,
     isPhaseCompleted,
     startProject,
@@ -32,6 +34,10 @@ export default function TerminalLedgerOverviewPage() {
 
   const handleStartOrResume = () => {
     if (isCompleted) {
+      router.push("/projects/terminal-ledger/review/");
+    } else if (activeBlocker?.type === "CHECKPOINT_REQUIRED") {
+      router.push(`/mentors/checkpoints/tl-cp-${activeBlocker.checkpointNumber}/`);
+    } else if (isReadyForRetrospective) {
       router.push("/projects/terminal-ledger/review/");
     } else if (!isStarted) {
       startProject();
@@ -98,7 +104,11 @@ export default function TerminalLedgerOverviewPage() {
               >
                 <span>
                   {isCompleted
-                    ? "Review Project"
+                    ? "Review Project Retrospective"
+                    : activeBlocker?.type === "CHECKPOINT_REQUIRED"
+                    ? `Prepare Checkpoint ${activeBlocker.checkpointNumber}`
+                    : isReadyForRetrospective
+                    ? "Complete Project Retrospective"
                     : isStarted
                     ? `Continue Building: Phase ${currentPhase.number} (${currentPhase.title})`
                     : "Start Project — Enter Phase 1"}
@@ -301,14 +311,22 @@ export default function TerminalLedgerOverviewPage() {
 
                     {/* Mentor Checkpoint Marker */}
                     {p.isCheckpointFollowed && (
-                      <div className="my-2 ml-4 pl-4 border-l-2 border-dashed border-primary/40 py-1.5 flex items-center gap-2 text-xs">
-                        <ShieldAlert className="size-3.5 text-primary" />
-                        <span className="font-mono font-semibold text-primary uppercase text-[11px]">
-                          Mentor Checkpoint {p.checkpointNumber}
-                        </span>
-                        <span className="text-muted-foreground/70 text-[11.5px]">
-                          — Conversational code & architecture defense
-                        </span>
+                      <div className="my-2 ml-4 pl-4 border-l-2 border-dashed border-primary/40 py-1.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div className="flex items-center gap-2">
+                          <ShieldAlert className="size-3.5 text-primary" />
+                          <span className="font-mono font-semibold text-primary uppercase text-[11px]">
+                            Mentor Checkpoint {p.checkpointNumber}
+                          </span>
+                          <span className="text-muted-foreground/70 text-[11.5px]">
+                            — Conversational code & architecture defense
+                          </span>
+                        </div>
+                        <Link
+                          href={`/mentors/checkpoints/tl-cp-${p.checkpointNumber}/`}
+                          className="text-[11px] font-mono text-primary hover:underline"
+                        >
+                          View Checkpoint →
+                        </Link>
                       </div>
                     )}
                   </div>

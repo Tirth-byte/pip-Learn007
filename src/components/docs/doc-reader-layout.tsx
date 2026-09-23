@@ -178,6 +178,16 @@ export function DocReaderLayout({
                       </span>
                     )}
 
+                    {isCompleted && (
+                      <Link
+                        href="/projects/terminal-ledger/"
+                        className="auth-primary-btn"
+                      >
+                        <span>Start Project: Terminal Ledger</span>
+                        <ArrowRight className="size-4" />
+                      </Link>
+                    )}
+
                     <Link href="/home/" className="auth-secondary-btn">
                       <span>Return to Home Workspace</span>
                       <ArrowRight className="size-4" />

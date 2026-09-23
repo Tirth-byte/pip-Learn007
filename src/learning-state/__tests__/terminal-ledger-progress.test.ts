@@ -197,4 +197,25 @@ describe("Terminal Ledger Progress State Integration", () => {
     assert.equal(blocker.checkpointNumber, 1);
     assert.equal(blocker.phaseNumber, 3);
   });
+
+  it("QA STATE MATRIX: deriveActiveBlocker returns null when project is completed", () => {
+    startTerminalLedgerProject();
+    completePhase("phase-01");
+    completePhase("phase-02");
+    completePhase("phase-03");
+    clearCheckpoint(1);
+    completePhase("phase-04");
+    completePhase("phase-05");
+    completePhase("phase-06");
+    clearCheckpoint(2);
+    completePhase("phase-07");
+    completePhase("phase-08");
+    completePhase("phase-09");
+    clearCheckpoint(3);
+    const completed = completeTerminalLedgerProject();
+
+    assert.equal(completed.status, "completed");
+    assert.equal(deriveActiveBlocker(completed), null);
+  });
 });
+

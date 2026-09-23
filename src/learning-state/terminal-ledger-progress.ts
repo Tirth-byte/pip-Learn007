@@ -110,6 +110,8 @@ export function deriveActiveBlocker(progress: LearnerTerminalLedgerProgress): {
   checkpointNumber: 1 | 2 | 3;
   phaseNumber: number;
 } | null {
+  if (progress.status === "completed") return null;
+
   const completed = new Set(progress.completedPhases);
   const cleared = new Set(progress.clearedCheckpoints);
 

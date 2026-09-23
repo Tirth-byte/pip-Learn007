@@ -369,7 +369,7 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
               <div />
             )}
 
-            {nextPhase && (
+            {nextPhase ? (
               <Link
                 href={`/projects/terminal-ledger/phases/${nextPhase.slug}/`}
                 className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors font-medium"
@@ -377,6 +377,16 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
                 <span>Phase {nextPhase.number}: {nextPhase.title}</span>
                 <ChevronRight className="size-4" />
               </Link>
+            ) : isCompleted && isCheckpointClearedForThisPhase ? (
+              <Link
+                href="/projects/terminal-ledger/review/"
+                className="flex items-center gap-1.5 text-primary hover:underline transition-colors font-medium"
+              >
+                <span>Project Retrospective</span>
+                <ChevronRight className="size-4" />
+              </Link>
+            ) : (
+              <div />
             )}
           </nav>
         </main>

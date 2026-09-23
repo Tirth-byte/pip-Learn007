@@ -13,6 +13,8 @@ export default function ProjectsPage() {
   const {
     isStarted,
     isCompleted,
+    isReadyForRetrospective,
+    activeBlocker,
     currentPhase,
     startProject,
   } = useTerminalLedgerProgress();
@@ -57,6 +59,16 @@ export default function ProjectsPage() {
                   <CheckCircle2 className="size-3.5" />
                   <span>Completed</span>
                 </span>
+              ) : activeBlocker?.type === "CHECKPOINT_REQUIRED" ? (
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+                  <span className="size-2 rounded-full bg-amber-500 animate-pulse" />
+                  <span>Checkpoint {activeBlocker.checkpointNumber} Due</span>
+                </span>
+              ) : isReadyForRetrospective ? (
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary">
+                  <span className="size-2 rounded-full bg-primary animate-pulse" />
+                  <span>Retrospective Due</span>
+                </span>
               ) : isStarted ? (
                 <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
                   <span className="size-2 rounded-full bg-primary animate-pulse" />
@@ -99,7 +111,23 @@ export default function ProjectsPage() {
                   href="/projects/terminal-ledger/review/"
                   className="auth-primary-btn"
                 >
-                  <span>Review Project</span>
+                  <span>Review Project Retrospective</span>
+                  <ArrowRight className="size-4" />
+                </Link>
+              ) : activeBlocker?.type === "CHECKPOINT_REQUIRED" ? (
+                <Link
+                  href={`/mentors/checkpoints/tl-cp-${activeBlocker.checkpointNumber}/`}
+                  className="auth-primary-btn"
+                >
+                  <span>Prepare Checkpoint {activeBlocker.checkpointNumber}</span>
+                  <ArrowRight className="size-4" />
+                </Link>
+              ) : isReadyForRetrospective ? (
+                <Link
+                  href="/projects/terminal-ledger/review/"
+                  className="auth-primary-btn"
+                >
+                  <span>Complete Project Retrospective</span>
                   <ArrowRight className="size-4" />
                 </Link>
               ) : isStarted ? (
