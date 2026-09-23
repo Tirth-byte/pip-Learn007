@@ -14,3 +14,5 @@ export * from "./persistence/repository.interface";
 export * from "./manual-progress";
 export * from "./terminal-ledger-progress";
 export * from "./problem-journal";
+export * from "./mentor-checkpoints";
+export * from "./project-retrospective";

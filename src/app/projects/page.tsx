@@ -94,7 +94,15 @@ export default function ProjectsPage() {
 
             {/* Action Area */}
             <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-border/70">
-              {isStarted ? (
+              {isCompleted ? (
+                <Link
+                  href="/projects/terminal-ledger/review/"
+                  className="auth-primary-btn"
+                >
+                  <span>Review Project</span>
+                  <ArrowRight className="size-4" />
+                </Link>
+              ) : isStarted ? (
                 <Link
                   href={`/projects/terminal-ledger/phases/${currentPhase.slug}/`}
                   className="auth-primary-btn"

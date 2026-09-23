@@ -7,7 +7,7 @@ import { useManualProgress } from "@/learning-state/manual-progress";
 import { useTerminalLedgerProgress } from "@/learning-state/terminal-ledger-progress";
 import { STARTING_MANUAL_SECTIONS } from "@/lib/docs/manual-structure";
 import { TERMINAL_LEDGER_PROJECT, TERMINAL_LEDGER_PHASES } from "@/lib/projects/terminal-ledger/structure";
-import { ArrowRight, CheckCircle2, Circle, Clock, Terminal } from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle, Clock, Terminal, Users } from "lucide-react";
 
 export default function HomePage() {
   const {
@@ -21,6 +21,7 @@ export default function HomePage() {
   const {
     isStarted: isProjectStarted,
     isCompleted: isProjectCompleted,
+    isReadyForRetrospective,
     currentPhase,
     completedPhasesCount,
     totalPhasesCount,
@@ -75,13 +76,13 @@ export default function HomePage() {
                     </h2>
 
                     <p className="text-sm text-muted-foreground/90 mt-2 mb-4 leading-relaxed max-w-2xl">
-                      Phase {activeBlocker.phaseNumber} is verified and complete. Progression is paused pending a conversational defense with a mentor (Tirth, Darsh, or Raj) before advancing.
+                      Phase {activeBlocker.phaseNumber} is verified and complete. Review your evidence and schedule a conversation with a mentor (Tirth, Darsh, or Raj) before continuing.
                     </p>
 
                     <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mb-6">
                       <div className="flex items-center gap-1.5">
                         <Clock className="size-3.5" />
-                        <span>~30 min conversational defense</span>
+                        <span>~25–30 min conversational review</span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Terminal className="size-3.5" />
@@ -91,10 +92,106 @@ export default function HomePage() {
 
                     <div className="flex flex-wrap items-center gap-3">
                       <Link
-                        href={`/projects/terminal-ledger/phases/phase-0${activeBlocker.phaseNumber}/`}
+                        href={`/mentors/checkpoints/tl-cp-${activeBlocker.checkpointNumber}/`}
                         className="auth-primary-btn"
                       >
-                        <span>View Checkpoint {activeBlocker.checkpointNumber} Agenda</span>
+                        <span>Prepare Checkpoint {activeBlocker.checkpointNumber}</span>
+                        <ArrowRight className="size-4" />
+                      </Link>
+
+                      <Link
+                        href={`/projects/terminal-ledger/phases/phase-0${activeBlocker.phaseNumber}/`}
+                        className="auth-secondary-btn"
+                      >
+                        <span>View Phase {activeBlocker.phaseNumber} Workspace</span>
+                      </Link>
+                    </div>
+                  </div>
+                ) : isProjectCompleted ? (
+                  /* State 4: Terminal Ledger Complete */
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+                      <CheckCircle2 className="size-4" />
+                      <span>Terminal Ledger Complete</span>
+                    </div>
+
+                    <div className="text-xs font-mono text-muted-foreground mb-1">
+                      Python Project 1 · Finished
+                    </div>
+
+                    <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
+                      10 Project Capabilities Practiced
+                    </h2>
+
+                    <p className="text-sm text-muted-foreground/90 mt-2 mb-4 leading-relaxed max-w-2xl">
+                      You built, persisted, validated, and completed the Terminal Ledger project across all 9 phases and 3 mentor checkpoints. Your project retrospective is saved locally.
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mb-6">
+                      <div className="flex items-center gap-1.5">
+                        <CheckCircle2 className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                        <span>9/9 Phases Completed</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Users className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                        <span>3/3 Checkpoints Cleared</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Terminal className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                        <span>Retrospective Saved Locally</span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Link
+                        href="/projects/terminal-ledger/review/"
+                        className="auth-primary-btn"
+                      >
+                        <span>Review Project Retrospective</span>
+                        <ArrowRight className="size-4" />
+                      </Link>
+
+                      <Link
+                        href="/journal/"
+                        className="auth-secondary-btn"
+                      >
+                        <span>Review Journal</span>
+                      </Link>
+
+                      <Link
+                        href="/manual/01-what-programming-actually-is/"
+                        className="auth-secondary-btn"
+                      >
+                        <span>Revisit Documentation</span>
+                      </Link>
+                    </div>
+                  </div>
+                ) : isReadyForRetrospective ? (
+                  /* State 5: All phases & checkpoints done -> Retrospective Due */
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                      <span className="size-2 rounded-full bg-primary animate-pulse" />
+                      <span>Project Conclusion · Retrospective Due</span>
+                    </div>
+
+                    <div className="text-xs font-mono text-muted-foreground mb-1">
+                      Terminal Ledger · Ready for Final Reflection
+                    </div>
+
+                    <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
+                      Final Project Retrospective
+                    </h2>
+
+                    <p className="text-sm text-muted-foreground/90 mt-2 mb-4 leading-relaxed max-w-2xl">
+                      All 9 phases and 3 mentor checkpoints are complete. Complete your project retrospective to record what you built, what failed, and what you learned before closing the project.
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Link
+                        href="/projects/terminal-ledger/review/"
+                        className="auth-primary-btn"
+                      >
+                        <span>Complete Project Retrospective</span>
                         <ArrowRight className="size-4" />
                       </Link>
 
@@ -112,9 +209,7 @@ export default function HomePage() {
                     <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-2">
                       <span className="size-2 rounded-full bg-primary animate-pulse" />
                       <span>
-                        {isProjectCompleted
-                          ? "Project Complete"
-                          : `Active Project · Phase ${currentPhase.number} of ${totalPhasesCount}`}
+                        Active Project · Phase {currentPhase.number} of {totalPhasesCount}
                       </span>
                     </div>
 
@@ -152,11 +247,7 @@ export default function HomePage() {
                         href={`/projects/terminal-ledger/phases/${currentPhase.slug}/`}
                         className="auth-primary-btn"
                       >
-                        <span>
-                          {isProjectCompleted
-                            ? "Review Terminal Ledger"
-                            : `Continue Building Phase ${currentPhase.number}`}
-                        </span>
+                        <span>Continue Building Phase {currentPhase.number}</span>
                         <ArrowRight className="size-4" />
                       </Link>
 

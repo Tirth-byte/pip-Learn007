@@ -31,7 +31,9 @@ export default function TerminalLedgerOverviewPage() {
   } = useTerminalLedgerProgress();
 
   const handleStartOrResume = () => {
-    if (!isStarted) {
+    if (isCompleted) {
+      router.push("/projects/terminal-ledger/review/");
+    } else if (!isStarted) {
       startProject();
       router.push("/projects/terminal-ledger/phases/phase-01/");
     } else {
@@ -96,7 +98,7 @@ export default function TerminalLedgerOverviewPage() {
               >
                 <span>
                   {isCompleted
-                    ? "Review Project (Phase 1)"
+                    ? "Review Project"
                     : isStarted
                     ? `Continue Building: Phase ${currentPhase.number} (${currentPhase.title})`
                     : "Start Project — Enter Phase 1"}

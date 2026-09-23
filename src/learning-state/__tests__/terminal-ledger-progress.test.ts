@@ -5,6 +5,7 @@ import {
   startTerminalLedgerProject,
   completePhase,
   clearCheckpoint,
+  completeTerminalLedgerProject,
   setCurrentPhase,
   resetTerminalLedgerProgress,
   deriveActiveBlocker,
@@ -132,7 +133,7 @@ describe("Terminal Ledger Progress State Integration", () => {
     assert.equal(deriveActiveBlocker(afterP8), null);
   });
 
-  it("completing Phase 9 triggers Checkpoint 3, and clearing it completes the project", () => {
+  it("completing Phase 9 triggers Checkpoint 3; CP3 clearance unblocks but requires retrospective for full completion", () => {
     startTerminalLedgerProject();
     completePhase("phase-01");
     completePhase("phase-02");
@@ -148,14 +149,29 @@ describe("Terminal Ledger Progress State Integration", () => {
 
     assert.equal(afterP9.completedPhases.length, 9);
     assert.equal(afterP9.currentPhaseSlug, "phase-09");
+    assert.equal(afterP9.status, "in_progress"); // Phase 9 alone does NOT complete project
     const blocker = deriveActiveBlocker(afterP9);
     assert.ok(blocker);
     assert.equal(blocker.checkpointNumber, 3);
 
     const afterCP3 = clearCheckpoint(3);
-    assert.equal(afterCP3.status, "completed");
-    assert.ok(afterCP3.completedAt);
+    assert.deepEqual(afterCP3.clearedCheckpoints, [1, 2, 3]);
+    assert.equal(afterCP3.status, "in_progress"); // Checkpoint 3 alone without retrospective does NOT complete project
     assert.equal(deriveActiveBlocker(afterCP3), null);
+
+    // Explicit completion gate requires all 9 phases + 3 checkpoints + retrospective
+    const completed = completeTerminalLedgerProject();
+    assert.equal(completed.status, "completed");
+    assert.ok(completed.completedAt);
+  });
+
+  it("completeTerminalLedgerProject strictly rejects premature completion", () => {
+    startTerminalLedgerProject();
+    completePhase("phase-01");
+
+    assert.throws(() => {
+      completeTerminalLedgerProject();
+    }, /Cannot complete project before finishing all 9 phases/);
   });
 
   it("setCurrentPhase updates the active phase view safely", () => {

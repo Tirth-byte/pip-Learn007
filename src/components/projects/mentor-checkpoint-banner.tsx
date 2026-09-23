@@ -1,6 +1,5 @@
-"use client";
-
 import React from "react";
+import Link from "next/link";
 import { ShieldAlert, CheckCircle2, ArrowRight } from "lucide-react";
 
 interface MentorCheckpointBannerProps {
@@ -90,7 +89,7 @@ export function MentorCheckpointBanner({
               {details.title}
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              You have completed this conversational review. Your technical reasoning, persistence architecture, and verification evidence were defended.
+              You have completed this conversational review. Your technical reasoning, persistence architecture, and verification evidence were reviewed and discussed.
             </p>
 
             {onContinue && checkpointNumber < 3 && (
@@ -103,6 +102,18 @@ export function MentorCheckpointBanner({
                   <span>Advance to {details.nextPhaseName}</span>
                   <ArrowRight className="size-3.5" />
                 </button>
+              </div>
+            )}
+
+            {checkpointNumber === 3 && (
+              <div className="pt-2">
+                <Link
+                  href="/projects/terminal-ledger/review/"
+                  className="auth-primary-btn text-xs py-2 px-4 inline-flex items-center gap-1.5"
+                >
+                  <span>Advance to Project Retrospective</span>
+                  <ArrowRight className="size-3.5" />
+                </Link>
               </div>
             )}
           </div>
@@ -156,13 +167,23 @@ export function MentorCheckpointBanner({
           </div>
 
           {/* Truthful Mentor Sign-Off Notice (No self-clear) */}
-          <div className="p-3.5 rounded-md bg-primary/5 border border-primary/20 text-xs text-muted-foreground space-y-1">
+          <div className="p-3.5 rounded-md bg-primary/5 border border-primary/20 text-xs text-muted-foreground space-y-2">
             <div className="font-semibold text-foreground text-[11.5px] flex items-center gap-1.5">
               <span>Human Mentor Sign-Off Required</span>
             </div>
             <p className="text-[11.5px] leading-relaxed">
-              Checkpoint defenses are conducted directly with mentors. Project progression pauses here until your mentor review is completed and signed off. Learner self-certification is prohibited.
+              Checkpoint defenses are conducted directly with mentors. Progression pauses here until your conversational review is completed and recorded.
             </p>
+
+            <div className="pt-2">
+              <Link
+                href={`/mentors/checkpoints/tl-cp-${checkpointNumber}/`}
+                className="auth-primary-btn text-xs py-2 px-4 inline-flex items-center gap-1.5"
+              >
+                <span>Prepare Checkpoint {checkpointNumber} & Schedule</span>
+                <ArrowRight className="size-3.5" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>

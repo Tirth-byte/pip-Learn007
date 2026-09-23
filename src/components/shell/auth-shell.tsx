@@ -8,6 +8,7 @@ import {
   BookOpen,
   FolderKanban,
   NotebookPen,
+  Users,
   Menu,
   X,
 } from "lucide-react";
@@ -18,7 +19,7 @@ import "@/styles/authenticated.css";
 
 interface AuthShellProps {
   children: React.ReactNode;
-  activeItem?: "home" | "learn" | "projects" | "journal";
+  activeItem?: "home" | "learn" | "projects" | "journal" | "mentors";
 }
 
 function PipLearnNavLogo() {
@@ -50,6 +51,8 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
       ? "projects"
       : pathname.startsWith("/journal")
       ? "journal"
+      : pathname.startsWith("/mentors")
+      ? "mentors"
       : "home");
 
   const learnHref = `/manual/${resumeSection.slug}/`;
@@ -155,6 +158,19 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
                   <NotebookPen className="h-4 w-4" />
                   <span>Journal</span>
                 </Link>
+
+                <Link
+                  href="/mentors/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                    currentActive === "mentors"
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  <Users className="h-4 w-4" />
+                  <span>Mentors</span>
+                </Link>
               </nav>
             </div>
 
@@ -231,6 +247,17 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
             >
               <NotebookPen className="h-4 w-4" />
               <span className="auth-nav-label">Journal</span>
+            </Link>
+
+            <Link
+              href="/mentors/"
+              className={`auth-nav-item ${currentActive === "mentors" ? "active" : ""}`}
+              aria-label="Mentors"
+              aria-current={currentActive === "mentors" ? "page" : undefined}
+              title="Mentors & Checkpoints"
+            >
+              <Users className="h-4 w-4" />
+              <span className="auth-nav-label">Mentors</span>
             </Link>
           </nav>
         </div>

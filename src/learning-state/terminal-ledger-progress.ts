@@ -149,8 +149,8 @@ export function completePhase(slug: string): LearnerTerminalLedgerProgress {
 
   const cleared = new Set(snapshot.clearedCheckpoints);
   let nextPhaseSlug = snapshot.currentPhaseSlug;
-  let status = snapshot.status === "not_started" ? "in_progress" : snapshot.status;
-  let completedAt = snapshot.completedAt;
+  const status = snapshot.status === "not_started" ? "in_progress" : snapshot.status;
+  const completedAt = snapshot.completedAt;
 
   const nextPhase = getNextPhase(slug);
 
@@ -166,9 +166,6 @@ export function completePhase(slug: string): LearnerTerminalLedgerProgress {
     nextPhaseSlug = "phase-09";
   } else if (nextPhase) {
     nextPhaseSlug = nextPhase.slug;
-  } else if (slug === "phase-09" && cleared.has(3)) {
-    status = "completed";
-    completedAt = new Date().toISOString();
   }
 
   const next: LearnerTerminalLedgerProgress = {
@@ -190,16 +187,15 @@ export function clearCheckpoint(checkpointNumber: 1 | 2 | 3): LearnerTerminalLed
   clearedSet.add(checkpointNumber);
 
   let nextPhaseSlug = snapshot.currentPhaseSlug;
-  let status = snapshot.status;
-  let completedAt = snapshot.completedAt;
+  const status = snapshot.status;
+  const completedAt = snapshot.completedAt;
 
   if (checkpointNumber === 1 && snapshot.completedPhases.includes("phase-03")) {
     nextPhaseSlug = "phase-04";
   } else if (checkpointNumber === 2 && snapshot.completedPhases.includes("phase-06")) {
     nextPhaseSlug = "phase-07";
   } else if (checkpointNumber === 3 && snapshot.completedPhases.includes("phase-09")) {
-    status = "completed";
-    completedAt = new Date().toISOString();
+    nextPhaseSlug = "phase-09";
   }
 
   const next: LearnerTerminalLedgerProgress = {
@@ -208,6 +204,30 @@ export function clearCheckpoint(checkpointNumber: 1 | 2 | 3): LearnerTerminalLed
     clearedCheckpoints: Array.from(clearedSet),
     currentPhaseSlug: nextPhaseSlug,
     completedAt,
+    updatedAt: new Date().toISOString(),
+  };
+
+  persistProgress(next);
+  return next;
+}
+
+export function completeTerminalLedgerProject(): LearnerTerminalLedgerProgress {
+  const snapshot = getTerminalLedgerProgressSnapshot();
+  const cleared = new Set(snapshot.clearedCheckpoints);
+
+  if (snapshot.completedPhases.length < 9) {
+    throw new Error(
+      `Cannot complete project before finishing all 9 phases. Currently: ${snapshot.completedPhases.length} of 9.`
+    );
+  }
+  if (!cleared.has(1) || !cleared.has(2) || !cleared.has(3)) {
+    throw new Error("Cannot complete project before clearing all 3 mentor checkpoints.");
+  }
+
+  const next: LearnerTerminalLedgerProgress = {
+    ...snapshot,
+    status: "completed",
+    completedAt: snapshot.completedAt || new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
 
@@ -295,11 +315,19 @@ export function useTerminalLedgerProgress() {
     resetTerminalLedgerProgress();
   }, []);
 
+  const isReadyForRetrospective =
+    progress.completedPhases.length === 9 &&
+    progress.clearedCheckpoints.includes(1) &&
+    progress.clearedCheckpoints.includes(2) &&
+    progress.clearedCheckpoints.includes(3) &&
+    progress.status !== "completed";
+
   return {
     progress,
     isStarted,
     isInProgress,
     isCompleted,
+    isReadyForRetrospective,
     currentPhase,
     completedPhasesCount,
     totalPhasesCount,
@@ -310,6 +338,7 @@ export function useTerminalLedgerProgress() {
     startProject: handleStartProject,
     completePhase: handleCompletePhase,
     clearCheckpoint: handleClearCheckpoint,
+    completeProject: completeTerminalLedgerProject,
     setCurrentPhase: handleSetCurrentPhase,
     reset: handleReset,
   };
