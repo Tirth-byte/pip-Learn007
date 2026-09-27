@@ -1,0 +1,342 @@
+/* `/projects` cinematic hero only. The milestone surface below remains unchanged. */
+
+.projects-cinematic-page {
+  background: #f7f9fd;
+}
+
+.projects-cinematic-hero {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: #1267a5;
+}
+
+/* Refined left-side atmospheric darkening:
+   - Subtle deep-blue transparent grading behind left content
+   - Strongest at far-left, smoothly disappearing toward center (under 48%)
+   - Preserves landscape, zero visible rectangle/card/box
+   - Right side and 3D glass artwork remain completely untouched */
+.projects-cinematic-hero::before {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 60% 68% at 6% 28%,
+      rgba(2, 22, 46, 0.52) 0%,
+      rgba(2, 22, 46, 0.36) 38%,
+      rgba(3, 26, 54, 0.14) 68%,
+      rgba(3, 26, 54, 0) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(2, 20, 42, 0.42) 0%,
+      rgba(2, 20, 42, 0.26) 16%,
+      rgba(3, 26, 54, 0.09) 32%,
+      rgba(3, 26, 54, 0) 48%
+    );
+}
+
+.projects-cinematic-hero-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* Left content composition:
+   Positioned in upper-left (7vw from viewport left, top 18%).
+   Overall content width ~520-560px.
+   Generous breathing room before the 3D glass artwork. */
+.projects-cinematic-content {
+  position: absolute;
+  z-index: 2;
+  top: 18%;
+  left: 7vw;
+  width: 100%;
+  max-width: 550px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  transform: none;
+}
+
+/* PROJECTS: small, uppercase, tracked, bright white, no shadow */
+.projects-cinematic-eyebrow {
+  display: block;
+  margin: 0 0 14px 0;
+  color: #ffffff;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: none;
+}
+
+/* Dominant serif editorial heading: exactly 2 lines, ~6-8% larger (~66-76px), line-height 0.90, no effects */
+.projects-cinematic-title {
+  width: 100%;
+  margin: 0 0 32px 0;
+  color: #ffffff;
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, "Times New Roman", serif;
+  font-size: clamp(4.12rem, 4.8vw, 4.7rem);
+  font-weight: 450;
+  letter-spacing: -0.025em;
+  line-height: 0.90;
+  text-shadow: none;
+}
+
+/* Body copy: max-width ~500px, 17-18px desktop, line-height 1.55, bright soft white 92% */
+.projects-cinematic-description {
+  max-width: 500px;
+  margin: 0 0 24px 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(1.05rem, 1.15vw, 1.125rem);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  text-shadow: 0 1px 4px rgba(2, 20, 40, 0.2);
+  text-wrap: pretty;
+}
+
+/* Button row: all 3 actions in ONE horizontal row on desktop */
+.projects-cinematic-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 18px 0;
+}
+
+.projects-hero-btn {
+  display: inline-flex;
+  min-height: 2.35rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.55rem;
+  border: 1px solid transparent;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+/* Primary CTA: crisp white, dark text, refined radius, subtle lift on hover */
+.projects-hero-btn-primary {
+  color: #071526;
+  background: #ffffff;
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 10px rgba(2, 18, 38, 0.16);
+}
+
+.projects-hero-btn-primary:hover {
+  background: #f4f8fe;
+  box-shadow: 0 4px 14px rgba(2, 18, 38, 0.24);
+  transform: translateY(-1px);
+}
+
+/* Secondary buttons: restrained translucent glass, slightly stronger contrast, readable white text */
+.projects-hero-btn-glass {
+  color: #ffffff;
+  background: rgba(5, 30, 58, 0.44);
+  border-color: rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(8px) saturate(115%);
+  -webkit-backdrop-filter: blur(8px) saturate(115%);
+  box-shadow: 0 2px 6px rgba(2, 18, 38, 0.12);
+}
+
+.projects-hero-btn-glass:hover {
+  color: #ffffff;
+  background: rgba(7, 42, 80, 0.6);
+  border-color: rgba(255, 255, 255, 0.46);
+  transform: translateY(-1px);
+}
+
+/* Metadata: ONE quiet horizontal line, small clean typography, consistent icons and gaps */
+.projects-cinematic-meta {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+  font-size: 0.69rem;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(2, 20, 40, 0.3);
+}
+
+.projects-cinematic-meta-divider {
+  color: rgba(255, 255, 255, 0.42);
+  user-select: none;
+}
+
+.projects-milestones-existing {
+  padding-top: 3.5rem;
+}
+
+/* Transparent navbar treatment scoped to this exact `/projects` hero. */
+.auth-env-projects:has(.projects-cinematic-hero) .auth-floating-nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  color: #fff;
+  background: rgba(8, 42, 76, 0.15);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px) saturate(115%);
+  -webkit-backdrop-filter: blur(12px) saturate(115%);
+}
+
+.auth-env-projects:has(.projects-cinematic-hero) .auth-floating-nav > div {
+  height: 4rem;
+}
+
+.auth-env-projects:has(.projects-cinematic-hero) .auth-nav-link,
+.auth-env-projects:has(.projects-cinematic-hero) .auth-floating-nav a[href="/home/"] span,
+.auth-env-projects:has(.projects-cinematic-hero) .auth-floating-nav a[href="/home/"] svg {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.auth-env-projects:has(.projects-cinematic-hero) .auth-nav-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.auth-env-projects:has(.projects-cinematic-hero) .auth-nav-link.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.auth-env-projects:has(.projects-cinematic-hero) .auth-floating-nav [data-theme-toggle],
+.auth-env-projects:has(.projects-cinematic-hero) .auth-floating-nav button {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.auth-env-projects:has(.projects-cinematic-hero) .auth-floating-nav .rounded-full {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+@media (max-width: 1100px) {
+  .projects-cinematic-hero-art {
+    object-position: 56% center;
+  }
+
+  .projects-cinematic-content {
+    top: 16%;
+    left: 5vw;
+    max-width: 510px;
+  }
+
+  .projects-cinematic-title {
+    font-size: clamp(3.4rem, 6vw, 4rem);
+    line-height: 0.90;
+    text-shadow: none;
+  }
+
+  .projects-cinematic-actions {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .projects-cinematic-meta {
+    flex-wrap: wrap;
+    gap: 0.4rem 0.6rem;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 720px) {
+  .projects-cinematic-hero {
+    min-height: 100svh;
+  }
+
+  .projects-cinematic-hero-art {
+    object-position: 78% 20%;
+  }
+
+  .projects-cinematic-hero::before {
+    background: linear-gradient(
+      180deg,
+      rgba(2, 20, 42, 0.1) 0%,
+      rgba(2, 20, 42, 0.28) 36%,
+      rgba(2, 22, 46, 0.82) 66%,
+      rgba(1, 16, 36, 0.95) 100%
+    );
+  }
+
+  .projects-cinematic-content {
+    top: auto;
+    left: 1.25rem;
+    bottom: 1.75rem;
+    width: calc(100% - 2.5rem);
+    max-width: none;
+    transform: none;
+    text-shadow: 0 2px 18px rgba(2, 20, 42, 0.5);
+  }
+
+  .projects-cinematic-eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .projects-cinematic-title {
+    margin-bottom: 1.25rem;
+    font-size: clamp(3.2rem, 15vw, 4rem);
+  }
+
+  .projects-cinematic-description {
+    margin-bottom: 1.25rem;
+    font-size: 0.92rem;
+    line-height: 1.54;
+  }
+
+  .projects-cinematic-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .projects-hero-btn {
+    flex: 1 1 100%;
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .projects-cinematic-meta {
+    flex-wrap: wrap;
+    gap: 0.4rem 0.65rem;
+    white-space: normal;
+  }
+
+  .projects-milestones-existing {
+    padding-top: 2.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects-hero-btn {
+    transition: none;
+    transform: none !important;
+  }
+}

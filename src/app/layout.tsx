@@ -1,13 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Newsreader } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppContextProvider } from "@/context/app-context";
 import { Toaster } from "sonner";
+import { PageTransition } from "@/components/shell/page-transition";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+});
+
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  weight: ["400", "500"],
+  variable: "--font-newsreader",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -51,13 +60,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} font-sans h-full antialiased`}
+      className={`${inter.variable} ${newsreader.variable} font-sans h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-neutral-200 selection:text-black">
         <script dangerouslySetInnerHTML={{ __html: themeRestoreScript }} />
         <AppContextProvider>
-          <TooltipProvider>{children}</TooltipProvider>
+          <TooltipProvider>
+            <PageTransition>{children}</PageTransition>
+          </TooltipProvider>
           <Toaster
             position="bottom-right"
             toastOptions={{

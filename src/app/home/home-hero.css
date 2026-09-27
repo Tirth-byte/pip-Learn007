@@ -1,0 +1,260 @@
+/* ============================================================================ */
+/* PIPLEARN HOME HERO — Integrated Sky + Crystal Artwork                        */
+/* ============================================================================ */
+
+/* ── Root hero section ── */
+.home-hero {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+/* ── Sky background ── */
+.home-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.home-hero-bg-img {
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+/* Localized atmospheric veil on the LEFT THIRD only for text contrast */
+.home-hero-text-veil {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 48% 66% at 17% 37%,
+    rgba(5, 35, 82, 0.18) 0%,
+    rgba(5, 35, 82, 0.09) 48%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Main content grid ── */
+.home-hero-grid {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 43fr 57fr;
+  align-items: center;
+  gap: 0;
+}
+
+@media (max-width: 1024px) {
+  .home-hero-grid {
+    grid-template-columns: 1fr;
+    padding: 0 1.5rem;
+    grid-template-rows: auto 1fr;
+  }
+}
+
+/* ── LEFT: Typography panel ── */
+.home-hero-left {
+  padding: 3rem 2rem 3rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  z-index: 4;
+  transform: translateY(-7.5rem);
+}
+
+@media (max-width: 1024px) {
+  .home-hero-left {
+    padding: 3rem 0 2rem;
+    order: 1;
+    transform: translateY(-0.75rem);
+  }
+}
+
+/* HOME eyebrow label */
+.home-hero-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Large white serif headline */
+.home-hero-headline {
+  font-family: var(--font-newsreader, "Newsreader", "Georgia", serif);
+  font-size: clamp(3.0rem, 5.5vw, 5.5rem);
+  font-weight: 400;
+  line-height: 0.99;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.18),
+    0 4px 16px rgba(0, 0, 0, 0.08);
+  margin: 0;
+  margin-bottom: 0.4rem;
+}
+
+.home-hero-headline-line {
+  display: block;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .home-hero-headline {
+    font-size: clamp(2.4rem, 9vw, 3.2rem);
+  }
+}
+
+/* Supporting copy */
+.home-hero-copy {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.86);
+  font-weight: 400;
+  max-width: 23.5rem;
+  text-shadow: 0 1px 5px rgba(0, 20, 58, 0.16);
+}
+
+/* ── CTA group ── */
+.home-hero-cta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.home-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.home-hero-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* White pill primary button */
+.home-hero-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.35rem;
+  min-height: 2.75rem;
+  background: #ffffff;
+  color: #0a1628;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  box-shadow: 0 6px 22px rgba(5, 25, 58, 0.18);
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.home-hero-btn-primary:hover {
+  background: #f0f5ff;
+  transform: translateY(-2px);
+  box-shadow: 0 9px 28px rgba(5, 25, 58, 0.22);
+}
+
+/* Glass ghost button */
+.home-hero-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  min-height: 2.75rem;
+  background: rgba(255, 255, 255, 0.11);
+  color: rgba(255, 255, 255, 0.96);
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease, transform 200ms ease;
+  backdrop-filter: blur(12px) saturate(125%);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  white-space: nowrap;
+}
+
+.home-hero-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.42);
+  transform: translateY(-2px);
+}
+
+/* Metadata line */
+.home-hero-meta {
+  font-size: 0.72rem;
+  font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+  color: rgba(255, 255, 255, 0.50);
+  margin: 0;
+}
+
+/* ── RIGHT: reserved visual space for the integrated artwork ── */
+.home-hero-right {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 1024px) {
+  .home-hero-right {
+    min-height: 380px;
+    order: 2;
+    width: 100%;
+  }
+
+}
+
+@media (max-width: 640px) {
+  .home-hero-right {
+    min-height: 300px;
+  }
+
+  .home-hero-headline-line {
+    white-space: normal;
+  }
+
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-dot {
+    animation: none !important;
+  }
+
+}

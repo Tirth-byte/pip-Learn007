@@ -9,16 +9,16 @@ import {
   TERMINAL_LEDGER_PHASES,
 } from "@/lib/projects/terminal-ledger/structure";
 import { useTerminalLedgerProgress } from "@/learning-state/terminal-ledger-progress";
+import { GlassArchitectureWorld } from "@/components/ui/glass-architecture-world";
 import {
   ArrowRight,
   Clock,
   Terminal,
-  Layers,
   CheckCircle2,
-  ShieldAlert,
   ChevronRight,
-  Sparkles,
+  Users,
 } from "lucide-react";
+import "@/styles/authenticated.css";
 
 export default function TerminalLedgerOverviewPage() {
   const router = useRouter();
@@ -47,293 +47,269 @@ export default function TerminalLedgerOverviewPage() {
     }
   };
 
+  const completedCount = TERMINAL_LEDGER_PHASES.filter((p) =>
+    isPhaseCompleted(p.slug)
+  ).length;
+
   return (
-    <AuthShell activeItem="projects">
+    <AuthShell activeItem="projects" environment="build">
       <main className="flex-1 overflow-y-auto">
-        <div className="auth-home-container max-w-4xl">
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-6" aria-label="Breadcrumb">
-            <Link href="/projects/" className="hover:text-foreground transition-colors">
-              Projects
-            </Link>
-            <span>/</span>
-            <span className="text-foreground font-semibold">Terminal Ledger</span>
-          </nav>
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 w-full auth-animate-in">
 
-          {/* Project Header */}
-          <div className="mb-10 pb-8 border-b border-border/80">
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="px-2.5 py-0.5 rounded text-[11px] font-mono uppercase font-semibold bg-primary/10 text-primary">
-                Python Masterclass · Project 1
-              </span>
-              <span className="text-muted-foreground text-xs">·</span>
-              <span className="text-xs text-muted-foreground font-mono">
-                {TERMINAL_LEDGER_PROJECT.totalPhases} Phases
-              </span>
-            </div>
+          {/* ============================================================== */}
+          {/* 1. HERO / SPECIFICATION SCENE                                  */}
+          {/* ============================================================== */}
+          <section className="min-h-[75vh] flex flex-col justify-center py-12 lg:py-16">
+            {/* Breadcrumb Navigation */}
+            <nav
+              className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-6"
+              aria-label="Breadcrumb"
+            >
+              <Link href="/projects/" className="hover:text-foreground transition-colors">
+                Projects
+              </Link>
+              <span className="text-foreground/20">/</span>
+              <span className="text-foreground font-semibold">Terminal Ledger</span>
+            </nav>
 
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-              {TERMINAL_LEDGER_PROJECT.title}
-            </h1>
-
-            <p className="text-base text-muted-foreground/95 mt-3 max-w-2xl leading-relaxed">
-              {TERMINAL_LEDGER_PROJECT.purpose}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-5 text-xs text-muted-foreground mt-5">
-              <div className="flex items-center gap-1.5">
-                <Clock className="size-4 text-primary" />
-                <span>{TERMINAL_LEDGER_PROJECT.estimatedTime} total expected effort</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Terminal className="size-4 text-primary" />
-                <span>Local terminal build (<code className="font-mono text-[11px] px-1 bg-muted rounded">python3</code>)</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Layers className="size-4 text-primary" />
-                <span>3 human mentor checkpoints</span>
-              </div>
-            </div>
-
-            {/* Dominant Start / Resume CTA */}
-            <div className="mt-8">
-              <button
-                type="button"
-                onClick={handleStartOrResume}
-                className="auth-primary-btn text-sm py-3 px-6 shadow-sm"
-              >
-                <span>
-                  {isCompleted
-                    ? "Review Project Retrospective"
-                    : activeBlocker?.type === "CHECKPOINT_REQUIRED"
-                    ? `Prepare Checkpoint ${activeBlocker.checkpointNumber}`
-                    : isReadyForRetrospective
-                    ? "Complete Project Retrospective"
-                    : isStarted
-                    ? `Continue Building: Phase ${currentPhase.number} (${currentPhase.title})`
-                    : "Start Project — Enter Phase 1"}
-                </span>
-                <ArrowRight className="size-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Section 1: The Learning Contract */}
-          <section className="mb-12">
-            <div className="p-6 rounded-xl border border-border bg-card shadow-xs">
-              <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-primary mb-1.5">
-                <Sparkles className="size-4" />
-                <span>The Just-in-Time Learning Contract</span>
-              </div>
-              <h2 className="text-lg font-bold text-foreground tracking-tight mb-2">
-                You are not expected to know everything upfront.
-              </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {TERMINAL_LEDGER_PROJECT.learningContract} Real software is not an isolated quiz. Terminal Ledger creates the authentic engineering pressures that make persistence, validation, dates, aggregation, and refactoring necessary.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 2: What You Know vs What You Unlock */}
-          <section className="mb-12">
-            <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold mb-4">
-              Capability Progression
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {/* What You Already Know */}
-              <div className="p-5 rounded-xl border border-border bg-card">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                  Your Foundation
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-12 items-center">
+              {/* Left Column: Editorial Spec Headline */}
+              <div className="lg:col-span-7 xl:col-span-8">
+                <div className="auth-eyebrow text-muted-foreground mb-4">
+                  <span className="size-2 rounded-full bg-foreground/60" />
+                  <span>Project Specification · 9 Phases · 3 Defense Gates</span>
                 </div>
-                <div className="text-base font-bold text-foreground tracking-tight mb-3">
-                  Starting Manual Skills
+
+                <h1 className="auth-hero-headline text-foreground mb-6">
+                  {TERMINAL_LEDGER_PROJECT.title}
+                </h1>
+
+                <p className="text-lg sm:text-xl text-muted-foreground/90 font-light max-w-2xl leading-relaxed mb-8 text-balance">
+                  {TERMINAL_LEDGER_PROJECT.purpose}
+                </p>
+
+                {/* Metadata Badges */}
+                <div className="flex flex-wrap items-center gap-6 text-xs text-muted-foreground font-mono mb-10">
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="size-3.5 text-muted-foreground/70" />
+                    <span>{TERMINAL_LEDGER_PROJECT.estimatedTime} Expected Effort</span>
+                  </div>
+                  <span className="text-foreground/20 hidden sm:inline">·</span>
+                  <div className="flex items-center gap-1.5">
+                    <Terminal className="size-3.5 text-muted-foreground/70" />
+                    <span>Python 3 Standard Library</span>
+                  </div>
+                  <span className="text-foreground/20 hidden sm:inline">·</span>
+                  <div className="flex items-center gap-1.5">
+                    <Users className="size-3.5 text-muted-foreground/70" />
+                    <span>3 Human Mentor Defenses</span>
+                  </div>
                 </div>
-                <ul className="space-y-2 text-xs text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Running standalone scripts via <code className="font-mono text-[11px] px-1 bg-muted rounded">python3</code> from the terminal</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Variables, data types (int, float, str, bool), and f-string formatting</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Conditional logic, while loops, and for loops</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Organizing structured records using lists and dictionaries</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Decomposing logic into pure functions with parameters and return values</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Reading Python tracebacks from the bottom up and debugging with evidence</span>
-                  </li>
-                </ul>
+
+                {/* Dominant Primary Action */}
+                <div className="flex flex-wrap items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={handleStartOrResume}
+                    className="auth-btn-primary"
+                  >
+                    {isCompleted ? (
+                      <>
+                        <span>Review Project Retrospective</span>
+                        <ArrowRight className="size-4" />
+                      </>
+                    ) : activeBlocker?.type === "CHECKPOINT_REQUIRED" ? (
+                      <>
+                        <span>Defend Checkpoint {activeBlocker.checkpointNumber}</span>
+                        <ArrowRight className="size-4" />
+                      </>
+                    ) : isReadyForRetrospective ? (
+                      <>
+                        <span>Complete Final Retrospective</span>
+                        <ArrowRight className="size-4" />
+                      </>
+                    ) : !isStarted ? (
+                      <>
+                        <span>Begin Phase 1: In-Memory Recording</span>
+                        <ArrowRight className="size-4" />
+                      </>
+                    ) : (
+                      <>
+                        <span>Continue Phase {currentPhase.number}: {currentPhase.title}</span>
+                        <ArrowRight className="size-4" />
+                      </>
+                    )}
+                  </button>
+
+                  <Link
+                    href="/journal/"
+                    className="auth-btn-secondary"
+                  >
+                    <span>Problem Journal</span>
+                  </Link>
+                </div>
               </div>
 
-              {/* What You Will Learn Just-in-Time */}
-              <div className="p-5 rounded-xl border border-border bg-card">
-                <div className="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
-                  Unlocked Just-in-Time
-                </div>
-                <div className="text-base font-bold text-foreground tracking-tight mb-3">
-                  Capabilities Introduced
-                </div>
-                <ul className="space-y-2 text-xs text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Text file persistence with context managers and modes (<code className="font-mono text-[11px] px-1 bg-muted rounded">with open(...)</code>)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>JSON serialization and deserialization (<code className="font-mono text-[11px] px-1 bg-muted rounded">json.dump</code>, <code className="font-mono text-[11px] px-1 bg-muted rounded">json.load</code>)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Defensive file loading: handling missing, empty, and corrupted data</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Bounded re-prompt validation loops preventing unexpected terminal crashes</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>ISO date parsing, chronological comparison, and monthly filtering</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Category budget threshold calculation and progress bar rendering</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Aggregating grouped totals and sorting rankings with key functions</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-mono">•</span>
-                    <span>Standards-compliant CSV export and modular architectural refactoring</span>
-                  </li>
-                </ul>
+              {/* Right Column: Substantial Dimensional Glass Architecture World */}
+              <div className="lg:col-span-5 xl:col-span-4 flex items-center justify-center w-full">
+                <GlassArchitectureWorld />
               </div>
             </div>
           </section>
 
-          {/* Section 3: Local Workstation Setup Guide */}
-          <section className="mb-12">
-            <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold mb-3">
-              Local Workstation Setup
-            </h2>
-            <div className="p-5 rounded-xl border border-border bg-muted/20 text-xs space-y-3">
-              <p className="text-muted-foreground leading-relaxed">
-                Create a local folder for your project and work from your own editor and terminal:
-              </p>
-              <div className="p-3.5 rounded-lg bg-background border border-border/80 font-mono text-[11.5px] text-foreground space-y-1">
-                <div>python3 --version  <span className="text-muted-foreground"># Python 3.10+ recommended</span></div>
+          {/* Generous Whitespace Divider */}
+          <div className="w-full my-8 sm:my-14" aria-hidden="true" />
+
+          {/* ============================================================== */}
+          {/* 2. GRAND COMPOSED SPECIFICATION ROADMAP SURFACE                */}
+          {/* ============================================================== */}
+          <section className="auth-surface-composed p-6 sm:p-10 lg:p-14 mb-20">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-foreground/10 mb-8">
+              <div>
+                <div className="auth-eyebrow text-muted-foreground mb-2">
+                  Engineering Roadmap
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+                  Sequential Progression & Defense Gates
+                </h2>
+                <p className="text-sm sm:text-base text-muted-foreground mt-2 max-w-2xl leading-relaxed">
+                  Progression is gated sequentially. Each phase builds directly on the verified codebase of the previous milestone.
+                </p>
               </div>
-              <p className="text-[11.5px] text-muted-foreground">
-                Phase 1 does not require code. It defines your behavioral specification and Project Launch Sheet.
-              </p>
-            </div>
-          </section>
 
-          {/* Section 4: Phase Sequence Roadmap */}
-          <section className="mb-12">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold">
-                Project Roadmap (9 Phases)
-              </h2>
-              <span className="text-xs font-mono text-muted-foreground">
-                3 Checkpoints
-              </span>
+              <div className="font-mono text-xs px-3 py-1.5 rounded-full bg-foreground/5 text-foreground border border-foreground/10 shrink-0">
+                {completedCount} of 9 Phases Complete
+              </div>
             </div>
 
+            {/* List of 9 Phases with Intentional Checkpoint Interruptions */}
             <div className="space-y-3">
-              {TERMINAL_LEDGER_PHASES.map((p) => {
-                const isPCompleted = isPhaseCompleted(p.slug);
-                const isPCurrent = isStarted && currentPhase.slug === p.slug;
+              {TERMINAL_LEDGER_PHASES.map((phase) => {
+                const done = isPhaseCompleted(phase.slug);
+                const isCurrent = currentPhase.slug === phase.slug && isStarted && !isCompleted;
+                const hasCheckpoint = phase.isCheckpointFollowed && phase.checkpointNumber;
 
                 return (
-                  <div key={p.slug}>
+                  <React.Fragment key={phase.slug}>
                     <Link
-                      href={`/projects/terminal-ledger/phases/${p.slug}/`}
-                      className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 block ${
-                        isPCurrent
-                          ? "border-primary bg-primary/5 shadow-xs"
-                          : isPCompleted
-                          ? "border-border/80 bg-card hover:bg-muted/30"
-                          : "border-border/60 bg-card/60 hover:bg-muted/20 text-muted-foreground"
+                      href={`/projects/terminal-ledger/phases/${phase.slug}/`}
+                      className={`group block p-4 sm:p-5 rounded-2xl transition-all ${
+                        isCurrent
+                          ? "bg-foreground/5 border border-foreground/15 shadow-xs"
+                          : "hover:bg-foreground/[0.03] border border-transparent"
                       }`}
                     >
-                      <div className="flex items-start gap-3.5 min-w-0">
-                        <div
-                          className={`size-7 rounded-full flex items-center justify-center font-mono text-xs font-semibold shrink-0 mt-0.5 ${
-                            isPCompleted
-                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                              : isPCurrent
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted text-muted-foreground"
-                          }`}
-                        >
-                          {isPCompleted ? (
-                            <CheckCircle2 className="size-4" />
-                          ) : (
-                            <span>{p.number}</span>
-                          )}
-                        </div>
-
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-sm font-semibold text-foreground truncate">
-                              {p.title}
-                            </h3>
-                            {isPCurrent && (
-                              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-primary text-primary-foreground">
-                                Active
-                              </span>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        {/* Left: Phase Status, Title, Description */}
+                        <div className="flex items-start sm:items-center gap-4 min-w-0">
+                          <div className="mt-0.5 sm:mt-0 shrink-0">
+                            {done ? (
+                              <CheckCircle2 className="size-5 text-emerald-500" />
+                            ) : isCurrent ? (
+                              <span className="size-2.5 rounded-full bg-foreground block ring-4 ring-foreground/20 animate-pulse" />
+                            ) : (
+                              <span className="size-2 rounded-full bg-foreground/20 block" />
                             )}
                           </div>
-                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                            {p.summary}
-                          </p>
-                        </div>
-                      </div>
 
-                      <div className="flex items-center gap-3 shrink-0 self-end sm:self-center text-xs text-muted-foreground">
-                        <span className="font-mono">{p.estimatedTime}</span>
-                        <ChevronRight className="size-4 text-muted-foreground/60" />
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 mb-1">
+                              <span className="font-mono text-xs font-semibold text-muted-foreground">
+                                PHASE {phase.number < 10 ? `0${phase.number}` : phase.number}
+                              </span>
+                            </div>
+
+                            <h3 className="font-medium text-base text-foreground group-hover:text-foreground transition-colors truncate">
+                              {phase.title}
+                            </h3>
+
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-1 max-w-2xl leading-relaxed">
+                              {phase.summary}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Right: Deliverables and action indicator */}
+                        <div className="flex items-center gap-4 shrink-0 font-mono text-xs self-end sm:self-center pl-9 sm:pl-0">
+                          <span className="text-muted-foreground/70 hidden sm:inline">
+                            {phase.criteria.length} Criteria
+                          </span>
+
+                          {isCurrent ? (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-foreground text-background text-xs font-medium">
+                              <span>Continue</span>
+                              <ArrowRight className="size-3" />
+                            </span>
+                          ) : (
+                            <ChevronRight className="size-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-transform" />
+                          )}
+                        </div>
                       </div>
                     </Link>
 
-                    {/* Mentor Checkpoint Marker */}
-                    {p.isCheckpointFollowed && (
-                      <div className="my-2 ml-4 pl-4 border-l-2 border-dashed border-primary/40 py-1.5 flex flex-wrap items-center justify-between gap-2 text-xs">
-                        <div className="flex items-center gap-2">
-                          <ShieldAlert className="size-3.5 text-primary" />
-                          <span className="font-mono font-semibold text-primary uppercase text-[11px]">
-                            Mentor Checkpoint {p.checkpointNumber}
-                          </span>
-                          <span className="text-muted-foreground/70 text-[11.5px]">
-                            — Conversational code & architecture defense
-                          </span>
+                    {/* Checkpoint Interruption Banner */}
+                    {hasCheckpoint && (
+                      <div className="my-3 p-4 sm:p-5 rounded-20 bg-amber-500/[0.07] border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="size-8 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                            <Users className="size-4" />
+                          </div>
+                          <div>
+                            <div className="text-[10px] font-mono uppercase tracking-wider font-bold text-amber-700 dark:text-amber-400">
+                              Human Calibration Gate · Checkpoint {phase.checkpointNumber}
+                            </div>
+                            <div className="text-xs text-foreground/80 font-medium">
+                              1-on-1 code walkthrough &amp; mental model defense with Tirth, Darsh, or Raj
+                            </div>
+                          </div>
                         </div>
+
                         <Link
-                          href={`/mentors/checkpoints/tl-cp-${p.checkpointNumber}/`}
-                          className="text-[11px] font-mono text-primary hover:underline"
+                          href={`/mentors/checkpoints/tl-cp-${phase.checkpointNumber}/`}
+                          className="self-start sm:self-center text-xs font-mono text-amber-700 dark:text-amber-300 hover:underline flex items-center gap-1 shrink-0"
                         >
-                          View Checkpoint →
+                          <span>Review Calibration Rubric</span>
+                          <ArrowRight className="size-3" />
                         </Link>
                       </div>
                     )}
-                  </div>
+                  </React.Fragment>
                 );
               })}
             </div>
+
+            {/* Stage Architecture Callout Footer */}
+            <div className="mt-10 pt-8 border-t border-foreground/10 grid grid-cols-1 md:grid-cols-3 gap-6 text-xs font-mono">
+              <div className="p-4 rounded-xl bg-foreground/[0.02] border border-foreground/5">
+                <div className="font-semibold text-foreground uppercase tracking-wider text-[11px] mb-1">
+                  Act I · In-Memory Core
+                </div>
+                <p className="text-muted-foreground font-sans leading-relaxed text-[12px]">
+                  Phases 1–3 establish transaction data structures and console formatting before disk I/O. Defended at Checkpoint 1.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-foreground/[0.02] border border-foreground/5">
+                <div className="font-semibold text-foreground uppercase tracking-wider text-[11px] mb-1">
+                  Act II · Storage & Commands
+                </div>
+                <p className="text-muted-foreground font-sans leading-relaxed text-[12px]">
+                  Phases 4–6 build the interactive REPL and JSON disk persistence engine. Defended at Checkpoint 2.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-foreground/[0.02] border border-foreground/5">
+                <div className="font-semibold text-foreground uppercase tracking-wider text-[11px] mb-1">
+                  Act III · Robustness & Release
+                </div>
+                <p className="text-muted-foreground font-sans leading-relaxed text-[12px]">
+                  Phases 7–9 add error recovery, analytics, and final calibration before human mentor defense at Checkpoint 3.
+                </p>
+              </div>
+            </div>
           </section>
+
         </div>
       </main>
     </AuthShell>

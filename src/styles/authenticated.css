@@ -1,155 +1,604 @@
-/* PipLearn Authenticated UI Scoped Styles */
+/* PipLearn Authenticated UI Scoped Styles — Visual Pass 2 (Art-Directed Environments) */
+
+:root {
+  --font-editorial: var(--font-newsreader), "Newsreader", "Playfair Display", "Charter", "Iowan Old Style", "Palatino", "Georgia", "Cambria", "Times New Roman", serif;
+}
+
+/* ========================================================================== */
+/* BASE AUTHENTICATED CANVAS & ENVIRONMENT THEMES                              */
+/* ========================================================================== */
 
 .piplearn-auth-shell {
   min-height: 100vh;
   display: flex;
-  background-color: var(--background);
-  color: var(--foreground);
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-}
-
-/* Desktop Navigation Rail */
-.auth-nav-rail {
-  width: 60px;
-  flex-shrink: 0;
-  border-right: 1px solid var(--border);
-  background-color: var(--sidebar, var(--background));
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.875rem 0.5rem;
-  z-index: 30;
-  user-select: none;
-}
-
-.auth-nav-item {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted-foreground);
-  transition: all 140ms ease;
   position: relative;
+  overflow-x: hidden;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  background-attachment: fixed;
+  transition: background-color 300ms ease;
+}
+
+/* 1. HOME / ORIENTATION ENVIRONMENT: Vivid sky blue + volumetric cloud landscape */
+.auth-env-home {
+  background-color: #0284c7;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(240, 249, 255, 0.32) 420px, rgba(250, 249, 246, 0.90) 780px, #faf9f6 1050px),
+    url('/images/environments/sky-clouds.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #0b1320;
+}
+
+.dark .auth-env-home {
+  background-color: #030712;
+  background-image:
+    linear-gradient(to bottom, rgba(3, 7, 18, 0.50) 0%, rgba(3, 7, 18, 0.72) 420px, rgba(9, 11, 16, 0.94) 780px, #090b10 1050px),
+    url('/images/environments/sky-clouds.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #f1f5f9;
+}
+
+/* 2. MANUAL / LEARNING ENVIRONMENT: Serene reading atmosphere with sky undertone */
+.auth-env-manual {
+  background-color: #f8fafc;
+  background-image:
+    linear-gradient(to bottom, rgba(248, 250, 252, 0.88) 0%, #f8fafc 600px),
+    radial-gradient(1300px 750px at 50% -8%, rgba(56, 189, 248, 0.12), transparent 65%);
+  color: #0f172a;
+}
+
+.dark .auth-env-manual {
+  background-color: #05070f;
+  background-image:
+    linear-gradient(to bottom, rgba(5, 7, 15, 0.92) 0%, #05070f 600px),
+    radial-gradient(1400px 800px at 50% -10%, rgba(30, 58, 138, 0.25), transparent 70%);
+  color: #f8fafc;
+}
+
+/* Documentation reading canvas */
+.doc-reader-surface {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 28px;
+  box-shadow:
+    0 2px 10px -2px rgba(0, 0, 0, 0.02),
+    0 16px 48px -10px rgba(15, 23, 42, 0.04);
+  position: relative;
+  transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.dark .doc-reader-surface {
+  background: #0c101a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 4px 20px -2px rgba(0, 0, 0, 0.4),
+    0 24px 60px -12px rgba(0, 0, 0, 0.65);
+}
+
+/* 3. PROJECTS ENVIRONMENT: Rich green grass & natural texture environment */
+.auth-env-projects {
+  background-color: #15803d;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(240, 253, 244, 0.32) 420px, rgba(247, 249, 253, 0.90) 780px, #f7f9fd 1050px),
+    url('/images/environments/grass-meadow.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #0f172a;
+}
+
+.dark .auth-env-projects {
+  background-color: #020810;
+  background-image:
+    linear-gradient(to bottom, rgba(2, 8, 16, 0.55) 0%, rgba(3, 6, 17, 0.75) 420px, rgba(3, 6, 17, 0.94) 780px, #030611 1050px),
+    url('/images/environments/grass-meadow.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #f8fafc;
+}
+
+/* 4. ACTIVE BUILD ENVIRONMENT: Saturated natural meadow + active code atmosphere */
+.auth-env-build {
+  background-color: #047857;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.18) 0%, rgba(240, 253, 244, 0.35) 420px, rgba(248, 250, 255, 0.90) 780px, #f8faff 1050px),
+    url('/images/environments/grass-meadow.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #0f172a;
+}
+
+.dark .auth-env-build {
+  background-color: #050612;
+  background-image:
+    linear-gradient(to bottom, rgba(5, 6, 18, 0.58) 0%, rgba(5, 6, 18, 0.78) 420px, rgba(5, 6, 18, 0.95) 780px, #050612 1050px),
+    url('/images/environments/grass-meadow.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #f8fafc;
+}
+
+/* 5. JOURNAL ENVIRONMENT: Warm sunset amber / cream / reflective field */
+.auth-env-journal {
+  background-color: #b45309;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.20) 0%, rgba(254, 243, 199, 0.36) 420px, rgba(250, 248, 245, 0.90) 780px, #faf8f5 1050px),
+    url('/images/environments/dusk-purple.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #1c1917;
+}
+
+.dark .auth-env-journal {
+  background-color: #0c0a09;
+  background-image:
+    linear-gradient(to bottom, rgba(12, 10, 9, 0.60) 0%, rgba(12, 10, 9, 0.80) 420px, rgba(12, 10, 9, 0.95) 780px, #0c0a09 1050px),
+    url('/images/environments/dusk-purple.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #f5f5f4;
+}
+
+/* 6. MENTORS ENVIRONMENT: Ethereal dusk purple & twilight sky */
+.auth-env-mentors {
+  background-color: #7e22ce;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.16) 0%, rgba(245, 243, 255, 0.32) 420px, rgba(250, 245, 255, 0.90) 780px, #faf5ff 1050px),
+    url('/images/environments/dusk-purple.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #1e1b4b;
+}
+
+.dark .auth-env-mentors {
+  background-color: #090714;
+  background-image:
+    linear-gradient(to bottom, rgba(9, 7, 20, 0.58) 0%, rgba(9, 7, 20, 0.78) 420px, rgba(9, 7, 20, 0.95) 780px, #090714 1050px),
+    url('/images/environments/dusk-purple.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #f5f3ff;
+}
+
+/* 7. CHECKPOINT / REVIEW ENVIRONMENT: Dusk purple mountain & twilight reflection */
+.auth-env-checkpoint {
+  background-color: #6366f1;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.16) 0%, rgba(238, 242, 255, 0.32) 420px, rgba(248, 250, 252, 0.90) 780px, #f8fafc 1050px),
+    url('/images/environments/dusk-purple.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #0f172a;
+}
+
+.dark .auth-env-checkpoint {
+  background-color: #060714;
+  background-image:
+    linear-gradient(to bottom, rgba(6, 7, 20, 0.60) 0%, rgba(6, 7, 20, 0.80) 420px, rgba(6, 7, 20, 0.95) 780px, #060714 1050px),
+    url('/images/environments/dusk-purple.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% auto, cover;
+  background-attachment: scroll, fixed;
+  color: #f1f5f9;
+}
+
+/* ========================================================================== */
+/* FLOATING TOP NAVIGATION                                                    */
+/* ========================================================================== */
+
+.auth-floating-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  width: 100%;
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  background-color: rgba(255, 255, 255, 0.65);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+
+.dark .auth-floating-nav {
+  background-color: rgba(8, 10, 18, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* On home (sky environment): nav is nearly transparent to preserve cinematic sky */
+.auth-env-home .auth-floating-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background-color: rgba(10, 64, 136, 0.035);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px) saturate(112%);
+  -webkit-backdrop-filter: blur(10px) saturate(112%);
+}
+
+.auth-env-home .auth-floating-nav > div {
+  height: 3.5rem;
+}
+
+.auth-env-home .auth-nav-link {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.auth-env-home .auth-nav-link:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.auth-env-home .auth-nav-link.active {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Home brand text white over sky */
+.auth-env-home .auth-floating-nav a[href="/home/"] span {
+  color: #ffffff;
+}
+
+.auth-env-home .auth-floating-nav a[href="/home/"] svg {
+  color: #ffffff;
+}
+
+/* Dark mode home: deeper translucent */
+.dark .auth-env-home .auth-floating-nav {
+  background-color: rgba(4, 7, 17, 0.28);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.auth-nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  padding: 0.4375rem 0.875rem;
+  border-radius: 8px;
+  color: var(--muted-foreground);
+  transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
 }
 
-.auth-nav-item:hover {
+.auth-nav-link:hover {
   color: var(--foreground);
-  background-color: var(--accent);
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
-.auth-nav-item:focus-visible {
+.dark .auth-nav-link:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.auth-nav-link.active {
+  color: var(--foreground);
+  background-color: rgba(0, 0, 0, 0.06);
+  font-weight: 600;
+}
+
+.dark .auth-nav-link.active {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ========================================================================== */
+/* EDITORIAL TYPOGRAPHY                                                       */
+/* ========================================================================== */
+
+.auth-editorial-title {
+  font-family: var(--font-editorial);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  color: var(--foreground);
+  text-wrap: balance;
+}
+
+.auth-hero-headline {
+  font-family: var(--font-editorial);
+  font-size: clamp(1.85rem, 5.5vw, 6.75rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.06;
+  color: var(--foreground);
+  overflow-wrap: break-word;
+}
+
+/* Eyebrow badge */
+.auth-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ========================================================================== */
+/* PIPLEARN SIGNATURE GLASS CODE TILES (ABSTRACT MOTIF)                       */
+/* ========================================================================== */
+
+.auth-glass-tile {
+  position: relative;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.60);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
+    0 24px 48px -12px rgba(15, 23, 42, 0.12),
+    0 4px 12px -2px rgba(15, 23, 42, 0.05);
+  padding: 1.25rem 1.375rem;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+  transition: transform 300ms ease, box-shadow 300ms ease;
+}
+
+.dark .auth-glass-tile {
+  background: rgba(14, 19, 32, 0.52);
+  backdrop-filter: blur(32px) saturate(190%);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.28),
+    0 32px 64px -16px rgba(0, 0, 0, 0.65),
+    0 4px 16px -2px rgba(0, 0, 0, 0.45);
+}
+
+.auth-glass-tile::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Skeleton code line bars inside glass tile */
+.auth-code-bar {
+  height: 6px;
+  border-radius: 9999px;
+  background-color: currentColor;
+  opacity: 0.18;
+}
+
+/* ========================================================================== */
+/* REFINED LIQUID-GLASS TREATMENT (LARGE COMPOSED SURFACES)                    */
+/* ========================================================================== */
+
+.auth-liquid-glass {
+  position: relative;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(36px) saturate(170%);
+  -webkit-backdrop-filter: blur(36px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.90);
+  box-shadow:
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.98),
+    0 32px 64px -16px rgba(15, 23, 42, 0.08),
+    0 2px 4px 0 rgba(15, 23, 42, 0.02);
+  transition: border-color 240ms ease, box-shadow 240ms ease;
+}
+
+.dark .auth-liquid-glass {
+  background: rgba(12, 16, 26, 0.68);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.18),
+    0 40px 80px -20px rgba(0, 0, 0, 0.75),
+    0 2px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.auth-liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 45%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+}
+
+/* Grand Single Composed Learning Surface */
+.auth-surface-composed {
+  position: relative;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    inset 0 1px 2px 0 rgba(255, 255, 255, 1),
+    0 32px 64px -16px rgba(15, 23, 42, 0.08),
+    0 4px 12px 0 rgba(15, 23, 42, 0.02);
+  transition: border-color 240ms ease, box-shadow 240ms ease;
+}
+
+.dark .auth-surface-composed {
+  background: rgba(10, 14, 24, 0.72);
+  backdrop-filter: blur(44px) saturate(190%);
+  -webkit-backdrop-filter: blur(44px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.20),
+    0 40px 80px -20px rgba(0, 0, 0, 0.8),
+    0 4px 16px 0 rgba(0, 0, 0, 0.5);
+}
+
+.auth-surface-composed::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    transparent 45%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+}
+
+/* Backward compatibility for dominant card */
+.auth-card-dominant {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(36px) saturate(170%);
+  -webkit-backdrop-filter: blur(36px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.90);
+  box-shadow:
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.98),
+    0 32px 64px -16px rgba(15, 23, 42, 0.08);
+  padding: 2.75rem 2.25rem;
+  position: relative;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.dark .auth-card-dominant {
+  background: rgba(12, 16, 26, 0.68);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.18),
+    0 40px 80px -20px rgba(0, 0, 0, 0.75);
+}
+
+/* ========================================================================== */
+/* HIGH-CONTRAST CONTROLS (BLACK / WHITE)                                     */
+/* ========================================================================== */
+
+.auth-primary-btn,
+.auth-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  height: 3.125rem;
+  padding: 0 1.75rem;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  background-color: #0f141c;
+  color: #ffffff;
+  box-shadow: 0 4px 12px -2px rgba(15, 20, 28, 0.20), 0 1px 2px 0 rgba(15, 20, 28, 0.08);
+  transition: opacity 160ms cubic-bezier(0.16, 1, 0.3, 1), transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  user-select: none;
+}
+
+.auth-primary-btn:hover,
+.auth-btn-primary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.auth-primary-btn:focus-visible,
+.auth-btn-primary:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
-.auth-nav-item.active {
-  color: var(--primary);
-  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+.auth-primary-btn:active,
+.auth-btn-primary:active {
+  transform: translateY(0);
 }
 
-.auth-nav-item.active::before {
-  content: "";
-  position: absolute;
-  left: -8px;
-  top: 10px;
-  bottom: 10px;
-  width: 3px;
-  border-radius: 0 2px 2px 0;
-  background-color: var(--primary);
+.dark .auth-primary-btn,
+.dark .auth-btn-primary {
+  background-color: #ffffff;
+  color: #090b0e;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.45);
 }
 
-.auth-nav-label {
-  font-size: 9.5px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  margin-top: 2px;
-  line-height: 1;
+.dark .auth-primary-btn:hover,
+.dark .auth-btn-primary:hover {
+  opacity: 0.94;
+  transform: translateY(-1px);
 }
 
-/* Quiet Home Surface */
-.auth-home-container {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem 5rem;
-  width: 100%;
-}
-
-@media (min-width: 640px) {
-  .auth-home-container {
-    padding: 3.5rem 2.5rem 6rem;
-  }
-}
-
-.auth-card-dominant {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background-color: var(--card);
-  padding: 2rem;
-  position: relative;
-  transition: border-color 150ms ease;
-}
-
-.auth-card-dominant:hover {
-  border-color: color-mix(in srgb, var(--border) 60%, var(--primary));
-}
-
-.auth-primary-btn {
+/* Quiet Secondary Control */
+.auth-secondary-btn,
+.auth-btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  height: 2.75rem;
-  padding: 0 1.25rem;
-  border-radius: 6px;
+  height: 3.125rem;
+  padding: 0 1.375rem;
+  border-radius: 12px;
   font-size: 0.875rem;
-  font-weight: 600;
-  background-color: var(--foreground);
-  color: var(--background);
-  transition: opacity 120ms ease, transform 120ms ease;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-}
-
-.auth-primary-btn:hover {
-  opacity: 0.92;
-}
-
-.auth-primary-btn:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-.auth-primary-btn:active {
-  transform: translateY(1px);
-}
-
-.auth-secondary-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.375rem;
-  height: 2.5rem;
-  padding: 0 1rem;
-  border-radius: 6px;
-  font-size: 0.8125rem;
   font-weight: 500;
-  background-color: transparent;
-  color: var(--foreground);
-  border: 1px solid var(--border);
-  transition: background-color 120ms ease, border-color 120ms ease;
+  letter-spacing: -0.01em;
+  background-color: rgba(255, 255, 255, 0.3);
+  color: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
   text-decoration: none;
   cursor: pointer;
+  user-select: none;
 }
 
-.auth-secondary-btn:hover {
-  background-color: var(--accent);
-  border-color: var(--muted-foreground);
+.dark .auth-secondary-btn,
+.dark .auth-btn-secondary {
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.auth-secondary-btn:hover,
+.auth-btn-secondary:hover {
+  background-color: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.32);
+  color: #0f172a;
+}
+
+.dark .auth-secondary-btn:hover,
+.dark .auth-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.30);
+  color: #ffffff;
 }
 
 .auth-secondary-btn:focus-visible {
@@ -157,34 +606,52 @@
   outline-offset: 2px;
 }
 
-/* Subtle Roadmap Rows */
+/* ========================================================================== */
+/* ROADMAP / LIST ROWS                                                        */
+/* ========================================================================== */
+
 .auth-roadmap-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 0.875rem;
-  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
   border: 1px solid transparent;
-  transition: all 120ms ease;
+  transition: all 160ms ease;
   text-decoration: none;
   color: inherit;
 }
 
 .auth-roadmap-row:hover {
-  background-color: var(--accent);
-  border-color: var(--border);
+  background-color: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.07);
 }
 
-/* Section Completion Bar in Doc Reader */
+.dark .auth-roadmap-row:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+/* ========================================================================== */
+/* SECTION COMPLETION BAR IN DOC READER                                       */
+/* ========================================================================== */
+
 .auth-section-completion-bar {
   margin-top: 3.5rem;
-  padding: 1.5rem 1.75rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background-color: color-mix(in srgb, var(--card) 95%, transparent);
+  padding: 1.75rem 2rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
+}
+
+.dark .auth-section-completion-bar {
+  background: rgba(14, 18, 28, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 @media (min-width: 640px) {
@@ -192,5 +659,108 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+  }
+}
+
+/* ========================================================================== */
+/* SLOW, RESTRAINED MOTION                                                    */
+/* ========================================================================== */
+
+@keyframes authFadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-animate-in {
+  animation: authFadeSlideUp 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes authSlideForward {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes authSlideBackward {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes authFadeInSimple {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.auth-slide-forward {
+  animation: authSlideForward 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.auth-slide-backward {
+  animation: authSlideBackward 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.auth-fade-in-nav {
+  animation: authFadeInSimple 400ms ease forwards;
+}
+
+/* Slow, Subtle Ambient Glass Floating Motion */
+@keyframes authFloatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(var(--rot, -4deg));
+  }
+  50% {
+    transform: translateY(-8px) rotate(var(--rot, -4deg));
+  }
+}
+
+@keyframes authFloatReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(var(--rot, 4deg));
+  }
+  50% {
+    transform: translateY(7px) rotate(var(--rot, 4deg));
+  }
+}
+
+.auth-float-slow {
+  --rot: -4deg;
+  animation: authFloatSlow 8s ease-in-out infinite;
+}
+
+.auth-float-reverse {
+  --rot: 4deg;
+  animation: authFloatReverse 10s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-animate-in,
+  .auth-glass-tile,
+  .auth-primary-btn,
+  .auth-float-slow,
+  .auth-float-reverse {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
   }
 }

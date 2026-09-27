@@ -1,0 +1,645 @@
+/* ==========================================================================
+   PipLearn `/mentors` Page Styling
+   - Full viewport cinematic hero with mentors-hero-final.jpg
+   - Hard visual cut to clean white product section (#FCFCFA)
+   - Vertical timeline for checkpoints
+   ========================================================================== */
+
+.mentors-cinematic-page {
+  background-color: #FCFCFA !important;
+  color: #111111;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   1. CINEMATIC HERO (EXACTLY 1 VIEWPORT)
+   ========================================================================== */
+
+.mentors-cinematic-hero {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 720px;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #0b071a;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.mentors-cinematic-hero-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  z-index: 0;
+  /* Remove animation to prevent GPU blurring */
+  /* animation: mentorsHeroDrift 24s ease-in-out infinite alternate; */
+}
+
+@keyframes mentorsHeroDrift {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.015); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mentors-cinematic-hero-art {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* Very subtle text readability veil on the left only */
+.mentors-cinematic-hero::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 10, 35, 0.22) 0%,
+    rgba(10, 10, 35, 0.1) 25%,
+    transparent 50%
+  );
+}
+
+.mentors-cinematic-content {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: max(6vw, 64px);
+  transform: translateY(-50%);
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  animation: heroContentFade 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes heroContentFade {
+  from { opacity: 0; transform: translateY(calc(-50% + 12px)); }
+  to { opacity: 1; transform: translateY(-50%); }
+}
+
+.mentors-cinematic-eyebrow {
+  display: block;
+  margin: 0 0 1.25rem 0;
+  color: #ffffff;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.mentors-cinematic-title {
+  margin: 0 0 1.75rem 0;
+  color: #ffffff;
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, serif;
+  font-size: clamp(4rem, 6vw, 6.5rem);
+  font-weight: 300;
+  line-height: 0.94;
+  white-space: pre-wrap;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.mentors-cinematic-description {
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-sans, "Inter"), sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  max-width: 42ch;
+  text-wrap: pretty;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+/* ==========================================================================
+   2. NAVBAR TRANSPARENT OVERLAY
+   ========================================================================== */
+
+.auth-env-mentors:has(.mentors-cinematic-hero) .auth-floating-nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  color: #fff;
+  background: transparent;
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.auth-env-mentors:has(.mentors-cinematic-hero) .auth-nav-link,
+.auth-env-mentors:has(.mentors-cinematic-hero) .auth-floating-nav a[href="/home/"] span,
+.auth-env-mentors:has(.mentors-cinematic-hero) .auth-floating-nav a[href="/home/"] svg {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.auth-env-mentors:has(.mentors-cinematic-hero) .auth-nav-link:hover {
+  color: #fff;
+}
+
+.auth-env-mentors:has(.mentors-cinematic-hero) .auth-nav-link.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.auth-env-mentors:has(.mentors-cinematic-hero) .auth-floating-nav [data-theme-toggle],
+.auth-env-mentors:has(.mentors-cinematic-hero) .auth-floating-nav button {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.auth-env-mentors:has(.mentors-cinematic-hero) .auth-floating-nav .rounded-full {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================================================
+   3. WHITE PRODUCT SECTION
+   ========================================================================== */
+
+.mentors-workspace-section {
+  position: relative;
+  width: 100%;
+  background-color: #FCFCFA;
+  padding: 120px 0 140px;
+  z-index: 5;
+}
+
+.mentors-workspace-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 32px;
+  width: 100%;
+}
+
+.mentors-section-intro {
+  margin-bottom: 5rem;
+  animation: workspaceFade 0.8s ease-out forwards;
+}
+
+@keyframes workspaceFade {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mentors-intro-eyebrow {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7c3aed; /* violet */
+  margin-bottom: 1.25rem;
+}
+
+.mentors-intro-title {
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, serif;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 400;
+  color: #111111;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0 0 1.25rem 0;
+}
+
+.mentors-intro-body {
+  font-family: var(--font-sans, "Inter"), sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #555555;
+  margin: 0;
+  max-width: 650px;
+}
+
+/* ==========================================================================
+   4. CHECKPOINT TIMELINE (VERTICAL)
+   ========================================================================== */
+
+.mentors-timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 8rem;
+}
+
+/* The connecting vertical line */
+.mentors-timeline::before {
+  content: "";
+  position: absolute;
+  left: 21px; /* Center of a 44px marker (22px) minus half the 1px line width */
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, #e5e5e5 5%, #e5e5e5 95%, transparent);
+  z-index: 0;
+}
+
+@media (max-width: 768px) {
+  .mentors-timeline::before {
+    display: none;
+  }
+}
+
+.mentors-timeline-row {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 44px 24px;
+  margin: 0 -24px;
+  border-top: 1px solid #f0f0f0;
+  border-radius: 16px;
+  z-index: 1;
+  transition: background-color 350ms ease;
+}
+
+.mentors-timeline-row:hover {
+  background-color: rgba(139, 92, 246, 0.02);
+}
+
+.mentors-timeline-row:first-child {
+  border-top: none;
+}
+
+/* Timeline Indicator Column (Left) */
+.mentors-timeline-indicator {
+  width: 120px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-start;
+  position: relative;
+}
+
+/* Crystal Number Marker */
+.mentors-crystal-marker {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  box-shadow: 
+    0 0 0 6px rgba(139, 92, 246, 0.04),
+    inset 0 1px 2px rgba(255,255,255,1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #7c3aed; /* Violet text to tie it into the theme */
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  transition: all 350ms ease;
+}
+
+.mentors-timeline-row:hover .mentors-crystal-marker {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 
+    0 0 0 8px rgba(139, 92, 246, 0.06),
+    inset 0 1px 2px rgba(255,255,255,1);
+  background-color: rgba(255, 255, 255, 1);
+  transform: scale(1.05);
+}
+
+/* Tiny light sweep on marker reveal */
+.mentors-crystal-marker::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.8) 50%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  animation: crystalSweep 3s ease-out 1s;
+}
+
+@keyframes crystalSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Timeline Content (Middle) */
+.mentors-timeline-content {
+  flex-grow: 1;
+  padding-right: 2rem;
+}
+
+.mentors-cp-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem; /* Tighter gap to title */
+}
+
+.mentors-cp-label {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #737373;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mentors-cp-title {
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, serif;
+  font-size: 1.6rem; /* Slightly tighter and more elegant */
+  font-weight: 400;
+  color: #111111;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.mentors-cp-desc {
+  font-size: 0.95rem; /* More delicate */
+  color: #525252;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 600px;
+}
+
+/* Action (Right) */
+.mentors-timeline-action {
+  flex-shrink: 0;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .mentors-timeline-action {
+    margin-top: 0;
+    align-self: center;
+  }
+}
+
+.mentors-btn-black {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #111111;
+  color: #ffffff;
+  padding: 0.85rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mentors-btn-black:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.mentors-btn-black .btn-arrow {
+  transition: transform 200ms ease;
+}
+
+.mentors-btn-black:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+.mentors-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #ffffff;
+  color: #111111;
+  padding: 0.75rem 1.5rem; /* Slightly sleeker */
+  border-radius: 9999px; /* Pill shape for contrast */
+  border: 1px solid rgba(0,0,0,0.1);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 250ms ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.mentors-btn-outline:focus-visible {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
+
+.mentors-btn-outline:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  background-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 12px rgba(139, 92, 246, 0.08), 
+    0 0 0 3px rgba(139, 92, 246, 0.04);
+}
+
+.mentors-btn-outline .btn-arrow {
+  transition: transform 250ms ease;
+}
+
+.mentors-btn-outline:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+/* ==========================================================================
+   5. MENTORS GRID
+   ========================================================================== */
+
+.mentors-roster-intro {
+  margin-bottom: 4rem;
+}
+
+.mentors-roster-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 3rem;
+}
+
+@media (min-width: 768px) {
+  .mentors-roster-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+}
+
+.mentor-profile {
+  display: flex;
+  flex-direction: column;
+  padding: 0 2.5rem;
+  border-left: 1px solid #f0f0f0;
+}
+
+.mentor-profile:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+/* The Crystal Mentor SVG Container */
+.mentor-crystal-wrapper {
+  position: relative;
+  width: 120px;
+  height: 136px;
+  margin-bottom: 2.5rem;
+  transition: all 350ms cubic-bezier(0.2, 0, 0, 1);
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 4px 6px rgba(139, 92, 246, 0.03));
+}
+
+.mentor-profile:nth-child(1) .mentor-crystal-wrapper { transform: rotate(-3deg); }
+.mentor-profile:nth-child(2) .mentor-crystal-wrapper { transform: rotate(2deg); }
+.mentor-profile:nth-child(3) .mentor-crystal-wrapper { transform: rotate(-1deg); }
+
+.mentor-profile:nth-child(1):hover .mentor-crystal-wrapper { transform: translateY(-3px) rotate(-1deg) scale(1.05); }
+.mentor-profile:nth-child(2):hover .mentor-crystal-wrapper { transform: translateY(-3px) rotate(4deg) scale(1.05); }
+.mentor-profile:nth-child(3):hover .mentor-crystal-wrapper { transform: translateY(-3px) rotate(1deg) scale(1.05); }
+
+.mentor-crystal-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.mentor-crystal-avatar-container {
+  position: absolute;
+  inset: 2px;
+  z-index: 1;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  pointer-events: none;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mentor-crystal-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+  transition: opacity 350ms ease, transform 350ms ease;
+}
+
+.mentor-profile:hover .mentor-crystal-avatar-img {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.mentor-crystal-letter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, serif;
+  font-size: 1.75rem;
+  color: #111111;
+  font-weight: 400;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* SVG Transitions */
+.crystal-refraction, .crystal-highlight {
+  transition: stop-color 350ms ease;
+}
+
+.mentor-profile:hover .crystal-refraction { stop-color: rgba(139, 92, 246, 0.35); }
+.mentor-profile:hover .crystal-highlight { stop-color: rgba(255, 255, 255, 1); }
+
+.mentor-name {
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: #111111;
+  margin: 0 0 0.25rem 0;
+}
+
+.mentor-role {
+  font-size: 0.9rem;
+  color: #737373;
+  margin: 0 0 2rem 0;
+}
+
+.mentor-availability {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #525252;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .mentors-cinematic-title {
+    font-size: clamp(3rem, 8vw, 4rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .mentors-cinematic-hero {
+    /* Keep it its own complete visual section */
+    height: 100svh;
+  }
+  
+  .mentors-cinematic-hero-art {
+    /* Deliberate mobile crop to preserve right side crystal structure */
+    object-position: 64% center;
+  }
+
+  .mentors-cinematic-content {
+    left: 24px;
+    top: auto;
+    bottom: 12vh; /* Bottom-left alignment */
+    transform: none;
+    max-width: calc(100% - 48px);
+  }
+  
+  @keyframes heroContentFade {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .mentors-timeline-row {
+    flex-direction: column;
+    padding: 32px 0;
+  }
+
+  .mentors-timeline-indicator {
+    width: 100%;
+    margin-bottom: 1.25rem;
+  }
+
+  .mentors-timeline-content {
+    padding-right: 0;
+  }
+
+  .mentor-profile {
+    border-left: none;
+    padding: 0;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 2.5rem;
+  }
+  
+  .mentor-profile:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}

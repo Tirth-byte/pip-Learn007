@@ -60,7 +60,7 @@ export function KnowledgePackDrawer({ pack, isOpen, onClose }: KnowledgePackDraw
           className="w-screen max-w-3xl bg-background border-l border-border shadow-2xl flex flex-col h-full animate-in slide-in-from-right duration-200"
         >
           {/* Drawer Top Bar */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border/80 bg-muted/20 shrink-0">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-foreground/10 bg-background/80 backdrop-blur-md shrink-0">
             <div className="flex items-center gap-2.5 min-w-0 pr-4">
               <span className="p-1 rounded bg-primary/10 text-primary shrink-0">
                 <BookOpen className="size-4" />

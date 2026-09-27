@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "video-shotcraft": {
+      "source": "Vincentwei1021/video-shotcraft",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "0a90ee66f1e8aa20409c52788d5b73b0ae674094b7fba5fee5c317853511310d"
+    }
+  }
+}

@@ -232,61 +232,69 @@ function persistRecords(next: Record<1 | 2 | 3, MentorCheckpointRecord>) {
 export function getCheckpointRecordsSnapshot(): Record<1 | 2 | 3, MentorCheckpointRecord> {
   if (!isLoaded) {
     isLoaded = true;
-    currentRecords = safeLoadFromStorage();
-  }
+    const loaded = safeLoadFromStorage();
+    // Reconcile checkpoint status against terminal ledger progress ONCE on initial load
+    const progress = getTerminalLedgerProgressSnapshot();
+    const clearedSet = new Set(progress.clearedCheckpoints);
+    const completedPhases = new Set(progress.completedPhases);
 
-  // Derive status against terminal ledger progress if not already completed
-  const progress = getTerminalLedgerProgressSnapshot();
-  const clearedSet = new Set(progress.clearedCheckpoints);
-  const completedPhases = new Set(progress.completedPhases);
+    let modified = false;
+    const updated = { ...loaded };
 
-  let modified = false;
-  const updated = { ...currentRecords };
+    for (const num of [1, 2, 3] as const) {
+      const rec = updated[num];
+      const isClearedInEngine = clearedSet.has(num);
+      const phaseDone =
+        num === 1
+          ? completedPhases.has("phase-03")
+          : num === 2
+          ? completedPhases.has("phase-06")
+          : completedPhases.has("phase-09");
 
-  for (const num of [1, 2, 3] as const) {
-    const rec = updated[num];
-    const isClearedInEngine = clearedSet.has(num);
-    const phaseDone =
-      num === 1
-        ? completedPhases.has("phase-03")
-        : num === 2
-        ? completedPhases.has("phase-06")
-        : completedPhases.has("phase-09");
-
-    if (isClearedInEngine && rec.status !== "completed") {
-      updated[num] = {
-        ...rec,
-        status: "completed",
-        completedAt: rec.completedAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      modified = true;
-    } else if (!isClearedInEngine && phaseDone && rec.status === "not_due") {
-      updated[num] = {
-        ...rec,
-        status: "due",
-        updatedAt: new Date().toISOString(),
-      };
-      modified = true;
-    }
-  }
-
-  if (modified) {
-    currentRecords = updated;
-    if (typeof window !== "undefined" && window.localStorage) {
-      try {
-        window.localStorage.setItem(MENTOR_CHECKPOINTS_STORAGE_KEY, JSON.stringify(updated));
-      } catch {
-        // silent
+      if (isClearedInEngine && rec.status !== "completed") {
+        updated[num] = {
+          ...rec,
+          status: "completed",
+          completedAt: rec.completedAt || rec.updatedAt,
+          updatedAt: rec.updatedAt, // preserve existing timestamp — don't generate new Date() here
+        };
+        modified = true;
+      } else if (!isClearedInEngine && phaseDone && rec.status === "not_due") {
+        updated[num] = {
+          ...rec,
+          status: "due",
+          updatedAt: rec.updatedAt, // preserve existing timestamp
+        };
+        modified = true;
       }
     }
+
+    if (modified) {
+      currentRecords = updated;
+      // Persist silently without notifying listeners (we're in initial load)
+      if (typeof window !== "undefined" && window.localStorage) {
+        try {
+          window.localStorage.setItem(MENTOR_CHECKPOINTS_STORAGE_KEY, JSON.stringify(updated));
+        } catch {
+          // silent
+        }
+      }
+    } else {
+      currentRecords = loaded;
+    }
   }
 
+  // Pure snapshot: always returns the same stable reference until persistRecords() is called
   return currentRecords;
 }
 
+// Stable frozen singleton for SSR — must never change reference
+const DEFAULT_CHECKPOINT_RECORDS: Record<1 | 2 | 3, MentorCheckpointRecord> =
+  Object.freeze(createDefaultCheckpointRecords());
+
 export function getServerCheckpointRecordsSnapshot(): Record<1 | 2 | 3, MentorCheckpointRecord> {
-  return createDefaultCheckpointRecords();
+  // Must always return the exact same object reference to satisfy useSyncExternalStore
+  return DEFAULT_CHECKPOINT_RECORDS;
 }
 
 function subscribe(callback: () => void) {

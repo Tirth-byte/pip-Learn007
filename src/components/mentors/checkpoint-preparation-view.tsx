@@ -15,14 +15,26 @@ import { useTerminalLedgerProgress } from "@/learning-state/terminal-ledger-prog
 import {
   ArrowLeft,
   ArrowRight,
-  Calendar,
+  CalendarDays,
   CheckCircle2,
   ExternalLink,
   NotebookPen,
-  Save,
-  ShieldAlert,
+  ShieldCheck,
+  SearchCode,
+  MessageSquareCode,
   Terminal,
+  Braces,
+  FileCheck,
 } from "lucide-react";
+import "./checkpoint-details.css";
+
+const getMentorAvatar = (name: string) => {
+  const n = name.toLowerCase();
+  if (n === "tirth") return "/images/mentors/tirth-avatar.png";
+  if (n === "darsh") return "/images/mentors/darsh-avatar.png";
+  if (n === "raj") return "/images/mentors/raj-avatar.jpg";
+  return null;
+};
 
 interface CheckpointPreparationViewProps {
   checkpointId: string;
@@ -132,464 +144,377 @@ export function CheckpointPreparationView({ checkpointId }: CheckpointPreparatio
   };
 
   return (
-    <AuthShell activeItem="mentors">
-      <main className="flex-1 overflow-y-auto">
-        <div className="auth-home-container max-w-4xl">
+    <AuthShell activeItem="mentors" environment="checkpoint">
+      <main className="flex-1 overflow-y-auto bg-foreground/[0.02]">
+        
+        {/* HERO REMAINS UNTOUCHED - atmospheric purple cloud environment */}
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 py-10 sm:py-14 w-full auth-animate-in relative z-10">
           {/* Back Nav */}
-          <div className="mb-6">
+          <nav className="mb-8" aria-label="Breadcrumb">
             <Link
               href="/mentors/"
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="size-3.5" />
-              <span>Back to Mentors & Checkpoints</span>
+              <span>Mentors & Checkpoints</span>
             </Link>
-          </div>
+          </nav>
 
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-primary font-semibold">
-                Checkpoint {info.checkpointNumber} of 3
+          <section className="mb-8">
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <span className="auth-eyebrow text-violet-600 dark:text-violet-400">
+                Checkpoint {info.checkpointNumber} of 3 · {info.stage}
               </span>
-              <span className="text-muted-foreground/60 text-xs">·</span>
-              <span className="text-xs text-muted-foreground">{info.stage}</span>
-              <span className="text-muted-foreground/60 text-xs">·</span>
+              <span className="text-muted-foreground/40 font-mono text-xs">·</span>
               <span className="text-xs font-mono text-muted-foreground">
                 {info.coveredPhaseRange}
               </span>
-
-              {/* Status Badge */}
-              {isCleared ? (
-                <span className="ml-auto inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 font-mono">
-                  <CheckCircle2 className="size-3.5" />
-                  <span>Recorded Locally · Cleared</span>
-                </span>
-              ) : record.status === "scheduled" ? (
-                <span className="ml-auto inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400 font-mono">
-                  <Calendar className="size-3.5" />
-                  <span>Session Planned Locally</span>
-                </span>
-              ) : isDue ? (
-                <span className="ml-auto inline-flex items-center gap-1 text-xs font-semibold text-primary font-mono animate-pulse">
-                  <ShieldAlert className="size-3.5" />
-                  <span>Due Now</span>
-                </span>
-              ) : (
-                <span className="ml-auto text-xs text-muted-foreground font-mono">
-                  Unlocks after Phase {info.afterPhase}
-                </span>
-              )}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+            <h1 className="auth-hero-headline text-foreground mb-4">
               {info.title}
             </h1>
-            <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+
+            <p className="text-base sm:text-lg text-muted-foreground/90 max-w-2xl leading-relaxed">
               {info.whyHere}
             </p>
-          </div>
-
-          {/* Section 1: Discussion Agenda */}
-          <section className="mb-8 p-6 rounded-xl border border-border bg-card shadow-xs">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-              <Terminal className="size-4 text-primary" />
-              <span>Discussion Agenda & Focus Areas</span>
-            </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Your mentor will ask you to explain your reasoning, walk through your code live, and discuss your decisions on these topics:
-            </p>
-            <ul className="space-y-2.5 text-xs text-foreground/90">
-              {info.discussionTopics.map((topic, idx) => (
-                <li key={idx} className="flex items-start gap-2.5">
-                  <span className="size-5 rounded-full bg-primary/10 text-primary flex items-center justify-center font-mono text-[10px] shrink-0 mt-0.5">
-                    {idx + 1}
-                  </span>
-                  <span className="leading-relaxed">{topic}</span>
-                </li>
-              ))}
-            </ul>
           </section>
+        </div>
 
-          {/* Section 2: Evidence to Have Ready */}
-          <section className="mb-8 p-6 rounded-xl border border-border bg-card shadow-xs">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-              <ShieldAlert className="size-4 text-primary" />
-              <span>Evidence to Have Ready</span>
-            </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Checkpoints are grounded in authentic evidence from your machine rather than recitation:
-            </p>
-            <ul className="space-y-2 text-xs text-foreground/90">
-              {info.evidenceRequired.map((ev, idx) => (
-                <li key={idx} className="flex items-start gap-2.5">
-                  <span className="text-primary font-mono text-sm leading-none">•</span>
-                  <span className="leading-relaxed">{ev}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* Section 3: Relevant Problem Journal Entries */}
-          <section className="mb-8 p-6 rounded-xl border border-border bg-card shadow-xs">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground">
-                <NotebookPen className="size-4 text-primary" />
-                <span>Relevant Problem Journal Entries ({info.coveredPhaseRange})</span>
-              </div>
-              <Link
-                href="/journal/"
-                className="text-[11px] text-primary hover:underline flex items-center gap-1"
-              >
-                <span>View All Journal Entries</span>
-                <ExternalLink className="size-3" />
-              </Link>
+        {/* TRANSITION INTO CLEAN WARM-WHITE WORKSPACE */}
+        <div className="cp-workspace">
+          <div className="cp-container">
+            
+            {/* PROTOCOL RAIL */}
+            <div className="cp-protocol-rail">
+              <div className="cp-protocol-node"><div className="cp-protocol-num">1</div> PREPARE</div>
+              <div className="cp-protocol-line" />
+              <div className="cp-protocol-node"><div className="cp-protocol-num">2</div> EVIDENCE</div>
+              <div className="cp-protocol-line" />
+              <div className="cp-protocol-node"><div className="cp-protocol-num">3</div> SESSION</div>
+              <div className="cp-protocol-line" />
+              <div className="cp-protocol-node"><div className="cp-protocol-num">4</div> OUTCOME</div>
             </div>
 
-            {relevantJournalEntries.length === 0 ? (
-              <div className="p-4 rounded-lg bg-muted/40 border border-border/80 text-xs text-muted-foreground leading-relaxed">
-                No Problem Journal entries recorded for {info.coveredPhaseRange}. Journal entries are not mandatory for progression, but having evidence of your debugging investigations ready to discuss with your mentor is encouraged.
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {relevantJournalEntries.map((entry) => (
-                  <div
-                    key={entry.id}
-                    className="p-4 rounded-lg border border-border bg-background text-xs space-y-2"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[11px] font-semibold text-primary">
-                        {entry.phase}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground font-mono">
-                        {new Date(entry.createdAt).toLocaleDateString()}
-                      </span>
+            {/* CHECKPOINT BRIEF */}
+            <section className="cp-section-spacing">
+              <div className="auth-eyebrow text-muted-foreground mb-2">CHECKPOINT BRIEF</div>
+              <h2 className="font-serif text-3xl text-foreground mb-8">What you should be ready to defend.</h2>
+              
+              <div className="cp-surface">
+                <div className="cp-brief-grid">
+                  {/* Left: Agenda */}
+                  <div className="cp-brief-left">
+                    <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground mb-6">
+                      <MessageSquareCode className="size-4 text-violet-500" />
+                      <span>Discussion Agenda</span>
                     </div>
-                    <div>
-                      <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                        Observation
+                    <ul className="space-y-4 text-sm text-foreground/90">
+                      {info.discussionTopics.map((topic, idx) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <span className="cp-agenda-num">
+                            {String(idx + 1).padStart(2, '0')}
+                          </span>
+                          <span className="leading-relaxed">{topic}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Right: Evidence */}
+                  <div className="cp-brief-right">
+                    <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground mb-6">
+                      <Terminal className="size-4 text-violet-500" />
+                      <span>Evidence to Have Ready</span>
+                    </div>
+                    <ul className="space-y-4 text-sm text-foreground/90">
+                      {info.evidenceRequired.map((ev, idx) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <div className="cp-diamond-bullet" />
+                          <span className="leading-relaxed">{ev}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* PROBLEM JOURNAL EVIDENCE */}
+            <section className="cp-section-spacing">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground">
+                  <NotebookPen className="size-4 text-amber-500" />
+                  <span>Problem Journal Evidence ({info.coveredPhaseRange})</span>
+                </div>
+                <Link
+                  href="/journal/"
+                  className="text-xs text-muted-foreground hover:text-foreground font-mono flex items-center gap-1"
+                >
+                  <span>View Full Journal</span>
+                  <ExternalLink className="size-3" />
+                </Link>
+              </div>
+
+              {relevantJournalEntries.length === 0 ? (
+                <div className="text-sm text-muted-foreground">
+                  No entries recorded yet. Journal entries aren't required for progression, but they can give you concrete debugging evidence to discuss with your mentor.
+                </div>
+              ) : (
+                <div className="cp-journal-strip">
+                  {relevantJournalEntries.slice(0, 3).map((entry) => (
+                    <div key={entry.id} className="cp-journal-entry">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-mono text-xs font-semibold text-foreground">{entry.phase}</span>
+                        <span className="text-xs text-muted-foreground font-mono">{new Date(entry.createdAt).toLocaleDateString()}</span>
                       </div>
-                      <div className="text-foreground/90 font-mono text-[11px] bg-muted/30 p-2 rounded">
+                      <div className="text-xs font-mono bg-foreground/5 p-2 rounded-md mb-2 text-foreground/80">
                         {entry.observation || "(No observation captured)"}
                       </div>
+                      {entry.fix && (
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-semibold text-foreground">Fix:</span> {entry.fix}
+                        </div>
+                      )}
                     </div>
-                    {entry.evidence && (
-                      <div>
-                        <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                          Evidence Used
-                        </div>
-                        <div className="text-muted-foreground">{entry.evidence}</div>
-                      </div>
-                    )}
-                    {entry.fix && (
-                      <div>
-                        <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                          Single Fix Applied
-                        </div>
-                        <div className="text-foreground/90">{entry.fix}</div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          {/* Section 4: Learner Preparation Notes */}
-          <section className="mb-8 p-6 rounded-xl border border-border bg-card shadow-xs">
-            <form onSubmit={handleSaveNotes}>
-              <div className="flex items-center justify-between mb-2">
-                <label
-                  htmlFor="preparation-notes"
-                  className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground"
-                >
-                  Personal Preparation Notes (Saved Locally)
-                </label>
-                {notesSaveFeedback && (
-                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                    Notes saved locally!
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground mb-3">
-                Jot down points you want to ask your mentor, trade-offs you considered, or parts of your code you want them to review.
-              </p>
-              <textarea
-                id="preparation-notes"
-                value={prepNotes}
-                onChange={(e) => setPrepNotes(e.target.value)}
-                placeholder="e.g. Discuss my decision to use a dictionary lookup for categories vs list comprehension..."
-                rows={3}
-                className="w-full text-xs p-3 rounded-md border border-input bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring resize-y font-sans"
-              />
-              <div className="mt-3 flex justify-end">
-                <button
-                  type="submit"
-                  className="auth-secondary-btn text-xs py-1.5 px-3 flex items-center gap-1.5"
-                >
-                  <Save className="size-3.5" />
-                  <span>Save Notes</span>
-                </button>
-              </div>
-            </form>
-          </section>
-
-          {/* Section 5: Local Scheduling Plan (Honest Model) */}
-          <section className="mb-8 p-6 rounded-xl border border-border bg-card shadow-xs">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-              <Calendar className="size-4 text-primary" />
-              <span>Plan Checkpoint Session (Local Scheduling Request)</span>
-            </div>
-
-            {/* Truthful Model Notice */}
-            <div className="p-3.5 rounded-md bg-muted/40 border border-border/80 text-xs text-muted-foreground mb-5 leading-relaxed">
-              <strong>Honest Scheduling Notice:</strong> PipLearn V1 records your checkpoint plan locally on this device. We do not integrate third-party calendar sync or pretend to have automatic calendar booking. Choose your preferred mentor, date, and time below to save your plan, then coordinate directly with your mentor.
-            </div>
-
-            {planError && (
-              <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-xs mb-4">
-                {planError}
-              </div>
-            )}
-
-            <form onSubmit={handleSavePlan} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {/* Mentor Selector */}
-                <div>
-                  <label
-                    htmlFor="select-mentor"
-                    className="block text-xs font-semibold text-foreground mb-1.5"
-                  >
-                    Select Mentor
-                  </label>
-                  <select
-                    id="select-mentor"
-                    value={selectedMentor}
-                    onChange={(e) => setSelectedMentor(e.target.value as MentorId)}
-                    className="w-full text-xs p-2.5 rounded-md border border-input bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
-                  >
-                    {LOCKED_MENTORS.map((m) => (
-                      <option key={m} value={m}>
-                        {m} (PipLearn Mentor)
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Preferred Date */}
-                <div>
-                  <label
-                    htmlFor="preferred-date"
-                    className="block text-xs font-semibold text-foreground mb-1.5"
-                  >
-                    Preferred Date
-                  </label>
-                  <input
-                    type="date"
-                    id="preferred-date"
-                    value={scheduledDate}
-                    onChange={(e) => setScheduledDate(e.target.value)}
-                    required
-                    className="w-full text-xs p-2 rounded-md border border-input bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
-                  />
-                </div>
-
-                {/* Preferred Time */}
-                <div>
-                  <label
-                    htmlFor="preferred-time"
-                    className="block text-xs font-semibold text-foreground mb-1.5"
-                  >
-                    Preferred Time
-                  </label>
-                  <input
-                    type="time"
-                    id="preferred-time"
-                    value={scheduledTime}
-                    onChange={(e) => setScheduledTime(e.target.value)}
-                    required
-                    className="w-full text-xs p-2 rounded-md border border-input bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-2 flex items-center justify-between">
-                <div>
-                  {planSaveFeedback && (
-                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                      Checkpoint plan saved locally!
-                    </span>
-                  )}
-                  {record.status === "scheduled" && !planSaveFeedback && (
-                    <span className="text-xs text-muted-foreground">
-                      Planned with <strong>{record.mentor}</strong> on {record.scheduledDate} at {record.scheduledTime}.
-                    </span>
+                  ))}
+                  {relevantJournalEntries.length > 3 && (
+                    <div className="text-xs text-muted-foreground font-mono mt-2 pl-2">
+                      + {relevantJournalEntries.length - 3} more entries in journal
+                    </div>
                   )}
                 </div>
+              )}
+            </section>
 
-                <button
-                  type="submit"
-                  className="auth-secondary-btn text-xs py-2 px-4"
-                >
-                  <span>{record.status === "scheduled" ? "Update Checkpoint Plan" : "Save Checkpoint Plan"}</span>
-                </button>
-              </div>
-            </form>
-          </section>
+            {/* BEFORE THE SESSION */}
+            <section className="cp-section-spacing">
+              <div className="auth-eyebrow text-muted-foreground mb-2">BEFORE THE SESSION</div>
+              <h2 className="font-serif text-3xl text-foreground mb-8">Prepare what you want to discuss.</h2>
 
-          {/* Section 6: Record Real Session Outcome */}
-          <section className="mb-12 p-6 rounded-xl border-2 border-border bg-card shadow-sm">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-foreground mb-2">
-              <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
-              <span>Record Session Outcome</span>
-            </div>
-
-            <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-              After you complete your real conversation with the mentor, record the qualitative outcome below. This marks Checkpoint {num} completed on your local machine and unlocks progression to the next phase.
-            </p>
-
-            {isCleared ? (
-              <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-xs space-y-2">
-                <div className="flex items-center justify-between font-semibold text-emerald-600 dark:text-emerald-400">
-                  <span>Recorded Locally · Session Completed</span>
-                  <span className="font-mono text-[11px]">
-                    {record.completedAt ? new Date(record.completedAt).toLocaleDateString() : ""}
-                  </span>
-                </div>
-                <div className="text-foreground/90">
-                  <strong>Mentor:</strong> {record.mentor}
-                </div>
-                {record.mentorNotes && (
-                  <div>
-                    <strong className="text-foreground">Discussion & Challenges:</strong>
-                    <p className="text-muted-foreground mt-0.5">{record.mentorNotes}</p>
-                  </div>
-                )}
-                {record.carryForwardNotes && (
-                  <div>
-                    <strong className="text-foreground">To Carry Forward:</strong>
-                    <p className="text-muted-foreground mt-0.5">{record.carryForwardNotes}</p>
-                  </div>
-                )}
-
-                <div className="pt-3 flex justify-end">
-                  {num === 1 ? (
-                    <Link
-                      href="/projects/terminal-ledger/phases/phase-04/"
-                      className="auth-primary-btn text-xs py-2 px-4"
-                    >
-                      <span>Continue to Phase 4: Validate Bad Input</span>
-                      <ArrowRight className="size-3.5" />
-                    </Link>
-                  ) : num === 2 ? (
-                    <Link
-                      href="/projects/terminal-ledger/phases/phase-07/"
-                      className="auth-primary-btn text-xs py-2 px-4"
-                    >
-                      <span>Continue to Phase 7: Budgets</span>
-                      <ArrowRight className="size-3.5" />
-                    </Link>
-                  ) : (
-                    <Link
-                      href="/projects/terminal-ledger/review/"
-                      className="auth-primary-btn text-xs py-2 px-4"
-                    >
-                      <span>Proceed to Project Retrospective</span>
-                      <ArrowRight className="size-3.5" />
-                    </Link>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleRecordOutcome} className="space-y-4">
-                {outcomeError && (
-                  <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-xs">
-                    {outcomeError}
-                  </div>
-                )}
-
-                <div>
-                  <label
-                    htmlFor="outcome-mentor"
-                    className="block text-xs font-semibold text-foreground mb-1.5"
-                  >
-                    Mentor who conducted this checkpoint
-                  </label>
-                  <select
-                    id="outcome-mentor"
-                    value={outcomeMentor}
-                    onChange={(e) => setOutcomeMentor(e.target.value as MentorId)}
-                    className="w-full sm:w-64 text-xs p-2.5 rounded-md border border-input bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
-                  >
-                    {LOCKED_MENTORS.map((m) => (
-                      <option key={m} value={m}>
-                        {m} (PipLearn Mentor)
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="mentor-notes"
-                    className="block text-xs font-semibold text-foreground mb-1.5"
-                  >
-                    What did your mentor challenge or clarify? <span className="text-primary">*</span>
-                  </label>
-                  <textarea
-                    id="mentor-notes"
-                    value={mentorNotes}
-                    onChange={(e) => setMentorNotes(e.target.value)}
-                    required
-                    placeholder="e.g. Challenged my assumption that saving only on exit is safe; verified my load-on-start exception handling for empty JSON files..."
-                    rows={3}
-                    className="w-full text-xs p-3 rounded-md border border-input bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring font-sans"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="carry-forward-notes"
-                    className="block text-xs font-semibold text-foreground mb-1.5"
-                  >
-                    What will you carry forward into subsequent phases?
-                  </label>
-                  <textarea
-                    id="carry-forward-notes"
-                    value={carryForwardNotes}
-                    onChange={(e) => setCarryForwardNotes(e.target.value)}
-                    placeholder="e.g. Always write defensive recovery for external files before writing business logic..."
-                    rows={2}
-                    className="w-full text-xs p-3 rounded-md border border-input bg-background text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring font-sans"
-                  />
-                </div>
-
-                <div className="pt-2">
-                  <label className="flex items-start gap-2.5 text-xs text-muted-foreground cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={sessionAcknowledged}
-                      onChange={(e) => setSessionAcknowledged(e.target.checked)}
-                      className="mt-0.5 rounded border-border"
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                {/* Left: 55% */}
+                <div className="lg:col-span-7">
+                  <form onSubmit={handleSaveNotes}>
+                    <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+                      <NotebookPen className="size-4 text-violet-500" />
+                      <span>Personal Preparation</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Jot down points you want to ask your mentor, trade-offs you considered, or lines of code you want them to inspect.
+                    </p>
+                    <textarea
+                      id="preparation-notes"
+                      value={prepNotes}
+                      onChange={(e) => setPrepNotes(e.target.value)}
+                      placeholder="e.g. Discuss my decision to use a dictionary lookup for categories vs list comprehension..."
+                      className="cp-textarea"
                     />
-                    <span>
-                      I acknowledge that I conducted this conversational review with <strong>{outcomeMentor}</strong> and demonstrated my local code and evidence.
-                    </span>
-                  </label>
+                    <div className="mt-3 flex items-center justify-between">
+                      {notesSaveFeedback ? (
+                        <span className="text-xs text-emerald-600 font-mono">Saved locally.</span>
+                      ) : <span />}
+                      <button type="submit" className="cp-btn-secondary">
+                        Save Notes
+                      </button>
+                    </div>
+                  </form>
                 </div>
 
-                <div className="pt-3 flex justify-end">
-                  <button
-                    type="submit"
-                    className="auth-primary-btn text-xs py-2 px-5"
-                  >
-                    <span>Record Session as Completed (Local Record)</span>
-                    <ArrowRight className="size-3.5" />
-                  </button>
+                {/* Right: 45% */}
+                <div className="lg:col-span-5">
+                  <form onSubmit={handleSavePlan} className="space-y-6">
+                    <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+                      <CalendarDays className="size-4 text-violet-500" />
+                      <span>Session Plan</span>
+                    </div>
+
+                    {planError && (
+                      <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-xs">
+                        {planError}
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block text-xs font-semibold text-foreground mb-2">Mentor</label>
+                      <div className="cp-mentor-select-wrapper">
+                        <div className="cp-mentor-select-crystal">
+                          {getMentorAvatar(selectedMentor) ? (
+                            <img src={getMentorAvatar(selectedMentor)!} alt={selectedMentor} className="cp-mentor-avatar-img" />
+                          ) : (
+                            selectedMentor.charAt(0)
+                          )}
+                        </div>
+                        <div className="text-sm font-medium">
+                          {selectedMentor}
+                          <span className="block text-xs text-muted-foreground font-normal">PipLearn Mentor</span>
+                        </div>
+                        <div className="ml-auto text-xs font-mono text-muted-foreground pr-2">Change ▼</div>
+                        <select
+                          value={selectedMentor}
+                          onChange={(e) => setSelectedMentor(e.target.value as MentorId)}
+                          className="cp-mentor-select"
+                        >
+                          {LOCKED_MENTORS.map((m) => (
+                            <option key={m} value={m}>{m} (PipLearn Mentor)</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold text-foreground mb-2">Date</label>
+                        <input
+                          type="date"
+                          value={scheduledDate}
+                          onChange={(e) => setScheduledDate(e.target.value)}
+                          required
+                          className="cp-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-foreground mb-2">Time</label>
+                        <input
+                          type="time"
+                          value={scheduledTime}
+                          onChange={(e) => setScheduledTime(e.target.value)}
+                          required
+                          className="cp-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="pt-2 flex items-center justify-between">
+                      {planSaveFeedback ? (
+                         <span className="text-xs text-emerald-600 font-mono">Plan saved locally.</span>
+                      ) : <span />}
+                      <button type="submit" className="cp-btn-primary py-2 px-5 text-sm">
+                        {record.status === "scheduled" ? "Update Plan →" : "Save Plan →"}
+                      </button>
+                    </div>
+                  </form>
                 </div>
+              </div>
+            </section>
+
+            {/* AFTER THE CONVERSATION (Outcome) */}
+            <section className="cp-section-spacing cp-reading-width">
+              {isCleared ? (
+                <div className="cp-completed-band">
+                  <CheckCircle2 className="size-5" />
+                  <span>CALIBRATION COMPLETE</span>
+                </div>
+              ) : null}
+
+              <div className="auth-eyebrow text-muted-foreground mb-2">AFTER THE CONVERSATION</div>
+              <h2 className="font-serif text-3xl text-foreground mb-2">Record your defense outcome.</h2>
+              <p className="text-sm text-muted-foreground mb-12">
+                After completing your conversational defense with your mentor, capture what changed in your understanding before advancing.
+              </p>
+
+              {outcomeError && (
+                <div className="p-3.5 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-xs mb-8">
+                  {outcomeError}
+                </div>
+              )}
+
+              <form onSubmit={handleRecordOutcome}>
+                {/* 01 MENTOR */}
+                <div className="cp-form-row">
+                  <div className="cp-form-num">01</div>
+                  <div className="cp-form-content">
+                    <label className="block text-sm font-semibold text-foreground mb-3">
+                      Mentor Who Conducted Session
+                    </label>
+                    <div className="cp-mentor-select-wrapper max-w-sm">
+                      <div className="cp-mentor-select-crystal">
+                        {getMentorAvatar(outcomeMentor) ? (
+                          <img src={getMentorAvatar(outcomeMentor)!} alt={outcomeMentor} className="cp-mentor-avatar-img" />
+                        ) : (
+                          outcomeMentor.charAt(0)
+                        )}
+                      </div>
+                      <div className="text-sm font-medium">
+                        {outcomeMentor}
+                        <span className="block text-xs text-muted-foreground font-normal">PipLearn Mentor</span>
+                      </div>
+                      <div className="ml-auto text-xs font-mono text-muted-foreground pr-2">Change ▼</div>
+                      <select
+                        value={outcomeMentor}
+                        onChange={(e) => setOutcomeMentor(e.target.value as MentorId)}
+                        className="cp-mentor-select"
+                      >
+                        {LOCKED_MENTORS.map((m) => (
+                          <option key={m} value={m}>{m} (PipLearn Mentor)</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 02 FEEDBACK */}
+                <div className="cp-form-row">
+                  <div className="cp-form-num">02</div>
+                  <div className="cp-form-content">
+                    <label className="block text-sm font-semibold text-foreground mb-1">
+                      Mentor Feedback & Key Takeaways
+                    </label>
+                    <p className="text-xs text-muted-foreground mb-3">Key observations made by the mentor during your code walkthrough.</p>
+                    <textarea
+                      value={mentorNotes}
+                      onChange={(e) => setMentorNotes(e.target.value)}
+                      className="cp-textarea min-h-[120px]"
+                    />
+                  </div>
+                </div>
+
+                {/* 03 CARRY FORWARD */}
+                <div className="cp-form-row">
+                  <div className="cp-form-num">03</div>
+                  <div className="cp-form-content">
+                    <label className="block text-sm font-semibold text-foreground mb-1">
+                      Concepts to Carry Forward Into Next Phases
+                    </label>
+                    <p className="text-xs text-muted-foreground mb-3">Specific architectural habits to maintain in upcoming milestones.</p>
+                    <textarea
+                      value={carryForwardNotes}
+                      onChange={(e) => setCarryForwardNotes(e.target.value)}
+                      className="cp-textarea min-h-[100px]"
+                    />
+                  </div>
+                </div>
+
+                {/* CONFIRMATION */}
+                <div className="cp-confirmation-band">
+                  <input
+                    type="checkbox"
+                    id="acknowledge-session"
+                    checked={sessionAcknowledged}
+                    onChange={(e) => setSessionAcknowledged(e.target.checked)}
+                    className="cp-checkbox"
+                  />
+                  <label htmlFor="acknowledge-session" className="text-sm text-foreground/90 leading-relaxed cursor-pointer select-none pt-0.5 flex-grow">
+                    I confirm that I conducted a conversational technical defense with {outcomeMentor} reviewing my Terminal Ledger code, data flow, and problem journal evidence.
+                  </label>
+                  <ShieldCheck className="size-5 text-violet-500 flex-shrink-0 mt-0.5" />
+                </div>
+
+                {/* ADVANCE */}
+                <div className="mt-10 flex flex-col items-start">
+                  <button type="submit" className="cp-btn-primary">
+                    <span>Record Outcome & Advance</span>
+                    <ArrowRight className="size-4 btn-arrow" />
+                  </button>
+                  <p className="text-xs text-muted-foreground mt-4 max-w-sm leading-relaxed">
+                    Completing this records the checkpoint outcome locally and unlocks the next eligible phase according to existing progression rules.
+                  </p>
+                </div>
+
               </form>
-            )}
-          </section>
+            </section>
+
+          </div>
         </div>
       </main>
     </AuthShell>

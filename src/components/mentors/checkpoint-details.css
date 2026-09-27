@@ -1,0 +1,356 @@
+/* checkpoint-details.css */
+
+.cp-workspace {
+  background-color: #FAFAF8;
+  color: #111111;
+  min-height: 100vh;
+  padding-bottom: 8rem;
+  /* Soft mist fade transition */
+  position: relative;
+}
+
+.cp-workspace::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, #FAFAF8);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.cp-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 20;
+}
+
+.cp-reading-width {
+  max-width: 860px;
+}
+
+/* 2. Protocol Rail */
+.cp-protocol-rail {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scrollbar-width: none;
+}
+
+.cp-protocol-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.cp-protocol-node {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #737373;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.cp-protocol-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: #ffffff;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7c3aed;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,1), 0 2px 4px rgba(139, 92, 246, 0.04);
+}
+
+.cp-protocol-line {
+  height: 1px;
+  background-color: #e5e5e5;
+  flex-grow: 1;
+  min-width: 24px;
+}
+
+/* 3. Defense Brief Surface */
+.cp-section-spacing {
+  margin-bottom: 7rem;
+}
+
+.cp-surface {
+  background-color: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.01);
+}
+
+.cp-brief-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 768px) {
+  .cp-brief-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+}
+
+.cp-brief-left {
+  padding-right: 0;
+}
+
+.cp-brief-right {
+  padding-top: 3rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+@media (min-width: 768px) {
+  .cp-brief-left {
+    padding-right: 3rem;
+  }
+  .cp-brief-right {
+    padding-top: 0;
+    border-top: none;
+    border-left: 1px solid #f0f0f0;
+    padding-left: 3rem;
+  }
+}
+
+.cp-agenda-num {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #a3a3a3;
+  margin-top: 0.15rem;
+}
+
+.cp-diamond-bullet {
+  width: 6px;
+  height: 6px;
+  background-color: #c4b5fd;
+  transform: rotate(45deg);
+  margin-top: 0.4rem;
+  flex-shrink: 0;
+}
+
+/* 4. Journal Evidence Strip */
+.cp-journal-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cp-journal-entry {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.5rem;
+  background: #ffffff;
+  border: 1px solid rgba(245, 158, 11, 0.15); /* amber subtle */
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(245, 158, 11, 0.02);
+}
+
+/* 5. Session Planning */
+.cp-textarea {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  font-size: 0.95rem;
+  color: #111111;
+  transition: all 250ms ease;
+  resize: vertical;
+  min-height: 140px;
+}
+
+.cp-textarea:focus {
+  outline: none;
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.cp-input {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: #111111;
+  transition: all 250ms ease;
+}
+
+.cp-input:focus {
+  outline: none;
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Crystal Mentor Selector */
+.cp-mentor-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  transition: border-color 200ms ease;
+}
+
+.cp-mentor-select-wrapper:focus-within {
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.cp-mentor-select-crystal {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-newsreader, "Newsreader"), serif;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(245,243,255,0.7));
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  color: #111;
+  overflow: hidden;
+}
+
+.cp-mentor-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.95;
+}
+
+.cp-mentor-select {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+/* 7. Record Outcome Form */
+.cp-form-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.cp-form-num {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.75rem;
+  color: #a3a3a3;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.cp-form-content {
+  flex-grow: 1;
+}
+
+/* 9. Confirmation Band */
+.cp-confirmation-band {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(139, 92, 246, 0.03);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  border-radius: 12px;
+  margin-top: 3rem;
+}
+
+.cp-checkbox {
+  margin-top: 0.25rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid #a3a3a3;
+  accent-color: #7c3aed;
+  cursor: pointer;
+}
+
+/* Buttons */
+.cp-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #111111;
+  color: #ffffff;
+  padding: 0.85rem 1.75rem;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 250ms ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cp-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.cp-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.cp-btn-primary .btn-arrow {
+  transition: transform 250ms ease;
+}
+
+.cp-btn-primary:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+.cp-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: #525252;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 200ms ease;
+  cursor: pointer;
+}
+
+.cp-btn-secondary:hover {
+  background-color: rgba(0,0,0,0.03);
+  color: #111111;
+}
+
+/* Completed State */
+.cp-completed-band {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 12px;
+  color: #059669;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}

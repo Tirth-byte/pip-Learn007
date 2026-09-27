@@ -85,10 +85,10 @@ export function DocToc({ items }: DocTocProps) {
 
   return (
     <aside aria-label="Table of contents" className="w-full text-xs select-none">
-      <div className="font-semibold tracking-wider mb-3 uppercase text-[10.5px] text-muted-foreground/80">
+      <div className="font-mono text-[10.5px] font-semibold tracking-[0.14em] uppercase text-muted-foreground/80 mb-3">
         On this page
       </div>
-      <nav className="space-y-1 overflow-y-auto max-h-[calc(100vh-10rem)] pr-1 border-l border-border/40">
+      <nav className="space-y-1 max-h-[calc(100vh-10rem)] overflow-y-auto pr-1 border-l border-foreground/10">
         {visibleItems.map((item) => {
           const isDirectlyActive = activeId === item.id;
           const isParentActive = item.depth === 2 && currentH2Id === item.id;
@@ -96,11 +96,11 @@ export function DocToc({ items }: DocTocProps) {
 
           let itemClasses = "";
           if (isDirectlyActive) {
-            itemClasses = "text-primary font-semibold border-l-2 border-primary -ml-[1px]";
+            itemClasses = "text-foreground font-medium border-l-2 border-foreground -ml-[1px] pl-2.5";
           } else if (isParentActive && !isSubheading) {
-            itemClasses = "text-foreground font-medium border-l-2 border-primary/40 -ml-[1px]";
+            itemClasses = "text-foreground/80 font-normal border-l-2 border-foreground/30 -ml-[1px] pl-2.5";
           } else {
-            itemClasses = "text-muted-foreground/75 hover:text-foreground";
+            itemClasses = "text-muted-foreground hover:text-foreground pl-3";
           }
 
           return (
@@ -116,7 +116,7 @@ export function DocToc({ items }: DocTocProps) {
                 }
               }}
               className={`block leading-snug py-1 transition-colors ${
-                isSubheading ? "pl-4 text-[11.5px]" : "pl-2.5 text-[12px]"
+                isSubheading ? "text-[11.5px]" : "text-[12.5px]"
               } ${itemClasses}`}
             >
               <span className="line-clamp-2">{item.text}</span>

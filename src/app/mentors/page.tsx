@@ -9,247 +9,224 @@ import {
   useMentorCheckpoints,
 } from "@/learning-state/mentor-checkpoints";
 import { useTerminalLedgerProgress } from "@/learning-state/terminal-ledger-progress";
-import {
-  ArrowRight,
-  Calendar,
-  CheckCircle2,
-  Clock,
-  ShieldAlert,
-  User,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import "./mentors-hero.css";
+
+const getMentorAvatar = (name: string) => {
+  const n = name.toLowerCase();
+  if (n === "tirth") return "/images/mentors/tirth-avatar.png";
+  if (n === "darsh") return "/images/mentors/darsh-avatar.png";
+  if (n === "raj") return "/images/mentors/raj-avatar.jpg";
+  return null;
+};
+
+const CrystalIcon = ({ name }: { name: string }) => {
+  const avatar = getMentorAvatar(name);
+  
+  return (
+    <div className="mentor-crystal-wrapper">
+      <svg className="mentor-crystal-svg" viewBox="0 0 58 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M29 2 L56 17 L56 49 L29 64 L2 49 L2 17 Z" 
+              fill="url(#crystalGrad)" 
+              stroke="url(#crystalBorder)" strokeWidth="1.5" />
+        <path d="M29 2 L29 64 M2 17 L29 33 L56 17 M2 49 L29 33 L56 49" 
+              stroke="url(#crystalFacets)" strokeWidth="0.75" />
+        <defs>
+          <linearGradient id="crystalGrad" x1="0" y1="0" x2="58" y2="66">
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.25)" />
+            <stop offset="50%" stopColor="rgba(255, 255, 255, 0.05)" className="crystal-highlight" />
+            <stop offset="100%" stopColor="rgba(139, 92, 246, 0.15)" className="crystal-refraction" />
+          </linearGradient>
+          <linearGradient id="crystalBorder" x1="0" y1="0" x2="58" y2="66">
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 1)" />
+            <stop offset="100%" stopColor="rgba(139, 92, 246, 0.4)" className="crystal-refraction" />
+          </linearGradient>
+          <linearGradient id="crystalFacets" x1="0" y1="0" x2="58" y2="66">
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.7)" />
+            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.05)" />
+          </linearGradient>
+        </defs>
+      </svg>
+      
+      {avatar ? (
+        <div className="mentor-crystal-avatar-container">
+          <img src={avatar} alt={name} className="mentor-crystal-avatar-img" />
+        </div>
+      ) : (
+        <div className="mentor-crystal-letter">{name.charAt(0)}</div>
+      )}
+    </div>
+  );
+};
 
 export default function MentorsPage() {
   const { records } = useMentorCheckpoints();
   const { activeBlocker, isCheckpointDue, isCheckpointCleared } = useTerminalLedgerProgress();
 
   return (
-    <AuthShell activeItem="mentors">
-      <main className="flex-1 overflow-y-auto">
-        <div className="auth-home-container">
-          {/* Header */}
-          <div className="mb-8">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground/80 font-medium">
-              Human Calibration · Evidence-Based Defenses
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mt-1">
-              Mentors & Checkpoints
+    <AuthShell activeItem="mentors" environment="mentors">
+      <main className="mentors-cinematic-page flex-1 overflow-y-auto">
+        {/* ================================================================ */}
+        {/* PART 1 — FULLSCREEN CINEMATIC HERO                               */}
+        {/* ================================================================ */}
+        <section className="mentors-cinematic-hero" aria-labelledby="mentors-hero-title">
+          <img
+            src="/images/mentors/mentors-hero-final.png"
+            alt=""
+            className="mentors-cinematic-hero-art"
+          />
+
+          <div className="mentors-cinematic-content">
+            <span className="mentors-cinematic-eyebrow">Mentors</span>
+            <h1 id="mentors-hero-title" className="mentors-cinematic-title">
+              Mentors &<br />Checkpoints
             </h1>
-            <p className="text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
-              PipLearn checkpoints are conversational defenses with human mentors at three pivotal inflection points. Mentors review your technical reasoning, data flow, and Problem Journal evidence—never numerical grades.
+            <p className="mentors-cinematic-description">
+              Software engineering cannot be verified solely by automated test suites. At three critical milestones, you present your code, explain data flows, and defend architectural decisions in a 1-on-1 calibration with a human mentor.
             </p>
           </div>
+        </section>
 
-          {/* Active Blocker Alert if Checkpoint is Due */}
-          {activeBlocker?.type === "CHECKPOINT_REQUIRED" && (
-            <div className="p-5 rounded-lg border-2 border-primary/40 bg-card mb-8 shadow-xs">
-              <div className="flex items-start gap-3.5">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0 mt-0.5">
-                  <ShieldAlert className="size-5" />
-                </div>
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-primary">
-                      Action Required
-                    </span>
-                    <span className="text-muted-foreground/60 text-xs">·</span>
-                    <span className="text-xs text-muted-foreground">
-                      Progression Paused
-                    </span>
-                  </div>
-                  <h2 className="text-lg font-bold text-foreground tracking-tight">
-                    Mentor Checkpoint {activeBlocker.checkpointNumber} is Due
-                  </h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
-                    Phase {activeBlocker.phaseNumber} is completed. Before advancing to the next phase, prepare your evidence, schedule a conversational review, and record the session outcome.
-                  </p>
-                  <div className="pt-2">
-                    <Link
-                      href={`/mentors/checkpoints/tl-cp-${activeBlocker.checkpointNumber}/`}
-                      className="auth-primary-btn text-xs py-2 px-4"
-                    >
-                      <span>Prepare Checkpoint {activeBlocker.checkpointNumber}</span>
-                      <ArrowRight className="size-3.5" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Mentors Section */}
-          <section className="mb-12">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold">
-                  PipLearn Mentors
-                </h2>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Available to conduct conversational reviews for Terminal Ledger checkpoints.
-                </p>
-              </div>
+        {/* ================================================================ */}
+        {/* PART 2 — CALM WHITE WORKSPACE                                    */}
+        {/* ================================================================ */}
+        <section className="mentors-workspace-section" aria-label="Mentors Workspace">
+          <div className="mentors-workspace-container">
+            
+            {/* Section Introduction */}
+            <div className="mentors-section-intro">
+              <span className="mentors-intro-eyebrow">Human Calibration</span>
+              <h2 className="mentors-intro-title">Three Calibration Milestones</h2>
+              <p className="mentors-intro-body">
+                Each checkpoint corresponds to a structural shift in the Terminal Ledger codebase.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {LOCKED_MENTORS.map((name) => (
-                <div
-                  key={name}
-                  className="p-5 rounded-xl border border-border bg-card shadow-xs flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="size-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">
-                        {name[0]}
-                      </div>
-                      <div>
-                        <div className="text-base font-bold text-foreground tracking-tight">
-                          {name}
-                        </div>
-                        <div className="text-[11px] font-mono text-muted-foreground">
-                          PipLearn Mentor
-                        </div>
-                      </div>
+            {/* Active Blocker Alert Banner if Checkpoint is Due */}
+            {activeBlocker?.type === "CHECKPOINT_REQUIRED" && (
+              <div className="p-8 rounded-2xl border border-amber-500/30 bg-amber-500/[0.04] mb-12 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="size-2 rounded-full bg-amber-500 animate-pulse" />
+                      <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                        Checkpoint {activeBlocker.checkpointNumber} Due · Progression Paused
+                      </span>
                     </div>
-
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Conducts conversational reviews and evidence-based code walkthroughs for Terminal Ledger checkpoints.
+                    <h2 className="text-2xl font-bold text-foreground tracking-tight">
+                      Phase {activeBlocker.phaseNumber} Defense Required
+                    </h2>
+                    <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
+                      Phase {activeBlocker.phaseNumber} code is verified. Prepare your Problem Journal evidence and schedule your review to unlock Phase {activeBlocker.phaseNumber + 1}.
                     </p>
                   </div>
 
-                  <div className="pt-4 mt-4 border-t border-border/70 flex items-center justify-between text-[11px] text-muted-foreground">
-                    <span className="font-mono">Checkpoints 1, 2 & 3</span>
-                    <span className="text-foreground/80 font-medium">
-                      PipLearn Mentor
-                    </span>
-                  </div>
+                  <Link
+                    href={`/mentors/checkpoints/tl-cp-${activeBlocker.checkpointNumber}/`}
+                    className="mentors-btn-black shrink-0"
+                  >
+                    <span>Prepare Checkpoint {activeBlocker.checkpointNumber}</span>
+                    <ArrowRight className="size-4" />
+                  </Link>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Checkpoint Registry Section */}
-          <section className="mb-12">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold">
-                  Terminal Ledger Checkpoint Gates
-                </h2>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Three designated human reviews across the 9-phase project arc.
-                </p>
               </div>
-            </div>
+            )}
 
-            <div className="space-y-4">
-              {([1, 2, 3] as const).map((num) => {
-                const info = CHECKPOINT_CURRICULUM_INFO[num];
-                const rec = records[num];
-                const isCleared = isCheckpointCleared(num);
-                const isDue = isCheckpointDue(num);
-                const isScheduled = rec.status === "scheduled" && !isCleared;
+            {/* Checkpoint Timeline */}
+            <div className="mentors-timeline">
+              {[1, 2, 3].map((cpNum) => {
+                const info = CHECKPOINT_CURRICULUM_INFO[cpNum as 1 | 2 | 3];
+                const record = records[cpNum as 1 | 2 | 3];
+                const cleared = isCheckpointCleared(cpNum as 1 | 2 | 3);
+                const due = isCheckpointDue(cpNum as 1 | 2 | 3);
 
                 return (
-                  <div
-                    key={num}
-                    className={`p-5 rounded-xl border transition-all ${
-                      isDue
-                        ? "border-primary/50 bg-card shadow-xs"
-                        : isCleared
-                        ? "border-emerald-500/25 bg-emerald-500/[0.02]"
-                        : "border-border bg-card/60"
-                    }`}
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                      <div className="space-y-1.5 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground">
-                            Checkpoint {num} of 3
+                  <div key={cpNum} className="mentors-timeline-row">
+                    {/* Left Indicator */}
+                    <div className="mentors-timeline-indicator">
+                      <div className="mentors-crystal-marker">0{cpNum}</div>
+                    </div>
+
+                    {/* Middle Content */}
+                    <div className="mentors-timeline-content">
+                      <div className="mentors-cp-meta">
+                        <span className="mentors-cp-label">
+                          Checkpoint 0{cpNum}
+                        </span>
+                        <span className="text-stone-300">·</span>
+                        <span className="mentors-cp-label">
+                          After Phase {info.afterPhase}
+                        </span>
+                        
+                        {due && (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-amber-600 ml-2">
+                            <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
+                            <span>Due</span>
                           </span>
-                          <span className="text-muted-foreground/60 text-xs">·</span>
-                          <span className="text-xs text-muted-foreground">
-                            {info.stage} ({info.coveredPhaseRange})
+                        )}
+                        {cleared && (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-emerald-600 ml-2">
+                            <span className="size-1.5 rounded-full bg-emerald-500" />
+                            <span>Cleared ({record?.mentor || "Mentor"})</span>
                           </span>
-
-                          {/* Status Badge */}
-                          {isCleared ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 font-mono">
-                              <CheckCircle2 className="size-3" />
-                              <span>Recorded Locally · Cleared</span>
-                            </span>
-                          ) : isScheduled ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-400 font-mono">
-                              <Calendar className="size-3" />
-                              <span>Session Planned ({rec.mentor || "Mentor"})</span>
-                            </span>
-                          ) : isDue ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary font-mono animate-pulse">
-                              <ShieldAlert className="size-3" />
-                              <span>Due Now</span>
-                            </span>
-                          ) : (
-                            <span className="text-[11px] text-muted-foreground/70 font-mono">
-                              Locked (after Phase {info.afterPhase})
-                            </span>
-                          )}
-                        </div>
-
-                        <h3 className="text-base font-bold text-foreground tracking-tight">
-                          {info.title}
-                        </h3>
-
-                        <p className="text-xs text-muted-foreground leading-relaxed max-w-3xl">
-                          {info.whyHere}
-                        </p>
-
-                        {/* Scheduled Detail if session is planned */}
-                        {isScheduled && rec.scheduledDate && rec.scheduledTime && (
-                          <div className="pt-1 flex items-center gap-3 text-xs text-muted-foreground">
-                            <span className="inline-flex items-center gap-1">
-                              <User className="size-3 text-primary" />
-                              <span>Mentor: <strong>{rec.mentor}</strong></span>
-                            </span>
-                            <span>·</span>
-                            <span className="inline-flex items-center gap-1">
-                              <Calendar className="size-3 text-primary" />
-                              <span>{rec.scheduledDate}</span>
-                            </span>
-                            <span>·</span>
-                            <span className="inline-flex items-center gap-1">
-                              <Clock className="size-3 text-primary" />
-                              <span>{rec.scheduledTime}</span>
-                            </span>
-                          </div>
                         )}
                       </div>
 
-                      {/* Right Action */}
-                      <div className="shrink-0 sm:pt-1">
-                        <Link
-                          href={`/mentors/checkpoints/${info.checkpointId}/`}
-                          className={
-                            isDue
-                              ? "auth-primary-btn text-xs py-2 px-4"
-                              : "auth-secondary-btn text-xs py-2 px-3.5"
-                          }
-                        >
-                          <span>
-                            {isCleared
-                              ? "View Recorded Outcome"
-                              : isScheduled
-                              ? "Manage Plan & Record"
-                              : isDue
-                              ? "Prepare & Plan"
-                              : "View Checkpoint Agenda"}
-                          </span>
-                          <ArrowRight className="size-3.5" />
-                        </Link>
-                      </div>
+                      <h3 className="mentors-cp-title">
+                        {info.title}
+                      </h3>
+
+                      <p className="mentors-cp-desc">
+                        {info.focus}
+                      </p>
+                    </div>
+
+                    {/* Right Action */}
+                    <div className="mentors-timeline-action">
+                      <Link
+                        href={`/mentors/checkpoints/tl-cp-${cpNum}/`}
+                        className={due ? "mentors-btn-black" : "mentors-btn-outline"}
+                      >
+                        <span>{cleared ? "View Record" : "Prepare Checkpoint"}</span>
+                        <ArrowRight className="size-4 btn-arrow" />
+                      </Link>
                     </div>
                   </div>
                 );
               })}
             </div>
-          </section>
-        </div>
+
+            {/* Mentors Roster */}
+            <div className="mentors-roster-intro">
+              <span className="mentors-intro-eyebrow">PipLearn Mentors</span>
+              <h2 className="mentors-intro-title" style={{ fontSize: "clamp(2rem, 3vw, 2.75rem)" }}>
+                Human calibration,<br />not automated grading.
+              </h2>
+              <p className="mentors-intro-body">
+                Mentor checkpoints are conversational reviews of your work. You are not expected to have perfect code, but you must be able to articulate why it behaves the way it does.
+              </p>
+            </div>
+
+            <div className="mentors-roster-grid">
+              {LOCKED_MENTORS.map((name) => (
+                <div key={name} className="mentor-profile">
+                  <CrystalIcon name={name} />
+                  <h3 className="mentor-name">
+                    {name}
+                  </h3>
+                  <p className="mentor-role">
+                    PipLearn Mentor
+                  </p>
+
+                  <div className="mentor-availability">
+                    Available for CP-1 · CP-2 · CP-3 reviews
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </section>
       </main>
     </AuthShell>
   );

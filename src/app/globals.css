@@ -193,3 +193,26 @@ button, a {
   }
 }
 
+/* ============================================================================ */
+/* PIPLEARN DESIGN SYSTEM: Custom Border-Radius & Spacing Utilities             */
+/* Used throughout authenticated UI for precise editorial corner control        */
+/* ============================================================================ */
+
+@layer utilities {
+  .rounded-10 { border-radius: 10px; }
+  .rounded-12 { border-radius: 12px; }
+  .rounded-14 { border-radius: 14px; }
+  .rounded-16 { border-radius: 16px; }
+  .rounded-18 { border-radius: 18px; }
+  .rounded-20 { border-radius: 20px; }
+  .rounded-24 { border-radius: 24px; }
+  .rounded-28 { border-radius: 28px; }
+  .rounded-32 { border-radius: 32px; }
+
+  /* Height shorthands used in floating tool buttons */
+  .h-8\.5 { height: 2.125rem; }
+  .h-15 { height: 3.75rem; }
+
+  /* Top offset for sticky sub-header (offset by nav height ~60px) */
+  .top-15 { top: 3.75rem; }
+}

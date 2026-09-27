@@ -1,0 +1,928 @@
+/* ==========================================================================
+   PipLearn `/journal` Page Styling
+   - Preserved Cinematic Mountain & Crystal Hero at TOP
+   - Smooth 120px seamless fade to solid warm white (#FAFAF8)
+   - Restrained editorial layout on clean white surface
+   - Large physical Crystal Journal Entry Cube with refractive highlights
+   ========================================================================== */
+
+.journal-cinematic-page {
+  background-color: #0b0811 !important;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   1. CINEMATIC PROBLEM JOURNAL HERO (PRESERVED)
+   ========================================================================== */
+
+.journal-cinematic-hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  isolation: isolate;
+  background: #1c0d28;
+}
+
+/* Atmospheric vignette on the left quadrant for readability */
+.journal-cinematic-hero::before {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 62% 72% at 7% 28%,
+      rgba(26, 8, 44, 0.54) 0%,
+      rgba(26, 8, 44, 0.38) 40%,
+      rgba(36, 10, 58, 0.14) 70%,
+      rgba(36, 10, 58, 0) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(24, 7, 40, 0.46) 0%,
+      rgba(24, 7, 40, 0.28) 18%,
+      rgba(32, 9, 52, 0.1) 35%,
+      rgba(32, 9, 52, 0) 50%
+    );
+}
+
+.journal-cinematic-hero-art {
+  z-index: 0;
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* Left content composition (Hero Title) */
+.journal-cinematic-content {
+  position: absolute;
+  z-index: 2;
+  top: 10%;
+  left: 5vw;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  transform: none;
+}
+
+.journal-cinematic-eyebrow {
+  display: block;
+  margin: 0 0 16px 0;
+  color: #ffffff;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: none;
+}
+
+.journal-cinematic-title {
+  width: 100%;
+  margin: 0 0 34px 0;
+  color: #ffffff;
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, "Times New Roman", serif;
+  font-size: clamp(4.5rem, 5.2vw, 5.375rem);
+  font-weight: 450;
+  letter-spacing: -0.025em;
+  line-height: 0.92;
+  text-shadow: none;
+}
+
+.journal-cinematic-description {
+  max-width: 485px;
+  margin: 0 0 26px 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(1.125rem, 1.25vw, 1.25rem);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  text-wrap: pretty;
+  text-shadow: none;
+}
+
+.journal-cinematic-actions {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.journal-hero-back-link {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.85rem;
+  border-radius: 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 550;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(26, 8, 44, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px) saturate(115%);
+  -webkit-backdrop-filter: blur(8px) saturate(115%);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(18, 5, 32, 0.15);
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.journal-hero-back-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.42);
+  transform: translateY(-1px);
+}
+
+/* Subtle smooth 120px fade seam between image hero and dark content */
+.journal-hero-fade-seam {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 140px;
+  background: linear-gradient(
+    to bottom,
+    rgba(11, 8, 17, 0) 0%,
+    rgba(11, 8, 17, 0.25) 30%,
+    rgba(11, 8, 17, 0.7) 65%,
+    #0b0811 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Scoped transparent floating navbar */
+.auth-env-journal:has(.journal-cinematic-hero) .auth-floating-nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  color: #fff;
+  background: rgba(26, 8, 44, 0.18);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px) saturate(115%);
+  -webkit-backdrop-filter: blur(12px) saturate(115%);
+}
+
+.auth-env-journal:has(.journal-cinematic-hero) .auth-floating-nav > div {
+  height: 4rem;
+}
+
+.auth-env-journal:has(.journal-cinematic-hero) .auth-nav-link,
+.auth-env-journal:has(.journal-cinematic-hero) .auth-floating-nav a[href="/home/"] span,
+.auth-env-journal:has(.journal-cinematic-hero) .auth-floating-nav a[href="/home/"] svg {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.auth-env-journal:has(.journal-cinematic-hero) .auth-nav-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.auth-env-journal:has(.journal-cinematic-hero) .auth-nav-link.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.auth-env-journal:has(.journal-cinematic-hero) .auth-floating-nav [data-theme-toggle],
+.auth-env-journal:has(.journal-cinematic-hero) .auth-floating-nav button {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.auth-env-journal:has(.journal-cinematic-hero) .auth-floating-nav .rounded-full {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* ==========================================================================
+   2. SOLID DARK LOWER JOURNAL SECTION
+   - Restrained editorial layout
+   - Lots of negative space
+   - Dark mode base
+   ========================================================================== */
+
+.journal-workspace-section {
+  position: relative;
+  width: 100%;
+  background-color: #0b0811 !important;
+  color: #f1f0f4 !important;
+  min-height: 100vh;
+  padding: 4.5rem 1.5rem 8rem;
+  isolation: isolate;
+  z-index: 5;
+}
+
+.journal-workspace-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Editorial lead-in */
+.journal-section-intro {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 3.5rem;
+  padding: 0 1rem;
+}
+
+.journal-intro-eyebrow {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f59e0b;
+  margin-bottom: 0.85rem;
+  line-height: 1.2;
+}
+
+.journal-intro-title {
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, "Times New Roman", serif;
+  font-size: clamp(2.2rem, 3.2vw, 3rem);
+  font-weight: 450;
+  color: #ffffff;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin: 0 0 1rem 0;
+  text-wrap: balance;
+}
+
+.journal-intro-body {
+  font-family: var(--font-sans, "Inter"), -apple-system, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* ==========================================================================
+   3. JOURNAL ENTRY CUBE / CRYSTAL CARD
+   - 900–1050px max width (1020px)
+   - Translucent white/crystal body placed on clean white canvas
+   - Subtle refraction-like edges
+   - Very faint lavender/pink edge highlights connecting to hero
+   - Layered 1px translucent borders
+   - Soft realistic shadow beneath it
+   - Subtle inner highlight
+   - 28px border-radius
+   - Spacious internal padding
+   - Motion: subtle entrance, tiny highlight refraction, max 2-3px depth
+   ========================================================================== */
+
+.crystal-journal-cube-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1020px;
+  margin: 0 auto 5rem;
+  z-index: 10;
+}
+
+/* Soft realistic physical shadow beneath the crystal slab */
+.crystal-cube-shadow {
+  position: absolute;
+  inset: 18px 28px -18px 28px;
+  border-radius: 36px;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(34, 16, 52, 0.08) 0%,
+    rgba(34, 16, 52, 0.025) 55%,
+    transparent 75%
+  );
+  filter: blur(20px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.crystal-journal-cube {
+  position: relative;
+  width: 100%;
+  border-radius: 28px;
+  background: rgba(22, 10, 36, 0.45);
+  backdrop-filter: blur(32px) saturate(130%);
+  -webkit-backdrop-filter: blur(32px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 0 0 1px rgba(220, 205, 235, 0.12),
+    0 1px 2px 0 rgba(0, 0, 0, 0.4),
+    0 24px 60px -12px rgba(0, 0, 0, 0.6),
+    0 10px 24px -6px rgba(0, 0, 0, 0.3),
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.2);
+  padding: 2.75rem 3rem;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease;
+  overflow: hidden;
+  z-index: 1;
+  animation: crystalEntrance 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes crystalEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Subtle prismatic refraction highlight along the crystal edges */
+.crystal-journal-cube::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 29px;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(244, 114, 182, 0.24) 20%,
+    rgba(216, 180, 254, 0.28) 45%,
+    rgba(255, 255, 255, 0.2) 70%,
+    rgba(251, 146, 60, 0.18) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Top inner ambient highlight */
+.crystal-journal-cube::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  border-radius: 28px 28px 0 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Content Container Inside the Cube */
+.crystal-cube-content {
+  position: relative;
+  z-index: 4;
+}
+
+/* Top Header in Cube */
+.crystal-cube-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.crystal-header-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.crystal-project-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.crystal-phase-select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.crystal-phase-select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.4rem 2.2rem 0.4rem 0.85rem;
+  font-size: 0.825rem;
+  font-weight: 550;
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+  font-family: var(--font-sans, "Inter"), -apple-system, sans-serif;
+}
+
+.crystal-phase-select:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 2px rgba(216, 180, 254, 0.3);
+}
+
+.crystal-phase-select option {
+  background: #1c0d28;
+  color: #fff;
+}
+
+.crystal-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.crystal-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.crystal-status-resolved {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.crystal-status-draft {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.crystal-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #a8a29e;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.crystal-btn-ghost:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================================================
+   4. FORM GRID (6 PROBLEM JOURNAL FIELDS)
+   ========================================================================== */
+
+.crystal-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem 2rem;
+}
+
+@media (max-width: 820px) {
+  .crystal-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.crystal-field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.crystal-field-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
+.crystal-field-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #a8a29e;
+}
+
+.crystal-field-prompt {
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, serif;
+  font-size: 1rem;
+  font-weight: 450;
+  color: #f5f5f4;
+  line-height: 1.35;
+  margin: 0 0 0.55rem 0;
+}
+
+.crystal-field-textarea {
+  width: 100%;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.75rem 0.85rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #fff;
+  resize: vertical;
+  min-height: 88px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+  font-family: var(--font-sans, "Inter"), -apple-system, sans-serif;
+}
+
+.crystal-field-textarea:focus {
+  outline: none;
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(216, 180, 254, 0.5);
+  box-shadow: 0 0 0 3px rgba(216, 180, 254, 0.25);
+}
+
+.crystal-field-textarea::placeholder {
+  color: #a8a29e;
+  font-style: italic;
+  font-size: 0.825rem;
+}
+
+/* ==========================================================================
+   5. CONTROLS FOOTER
+   ========================================================================== */
+
+.crystal-cube-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.crystal-footer-info {
+  display: flex;
+  align-items: center;
+}
+
+.crystal-save-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 550;
+  color: #34d399;
+  animation: fadeIn 200ms ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.crystal-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Black primary action button */
+.crystal-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.65rem;
+  padding: 0 1.35rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  background-color: #120e1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 14px -2px rgba(18, 12, 28, 0.28);
+  cursor: pointer;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms ease, opacity 160ms ease;
+}
+
+.crystal-btn-primary:hover {
+  opacity: 0.94;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px -2px rgba(18, 12, 28, 0.38);
+}
+
+/* Restrained secondary action button */
+.crystal-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 2.65rem;
+  padding: 0 1.25rem;
+  border-radius: 10px;
+  font-size: 0.835rem;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.crystal-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   6. RECORDED ENTRIES SECTION (CLEAN WHITE BACKGROUND)
+   ========================================================================== */
+
+.journal-entries-section {
+  max-width: 1020px;
+  margin: 0 auto;
+}
+
+.journal-entries-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.journal-entries-title {
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 450;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem 0;
+}
+
+.journal-entries-subtitle {
+  font-size: 0.875rem;
+  color: #a8a29e;
+  margin: 0;
+}
+
+.journal-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 550;
+  color: #a8a29e;
+  text-decoration: none;
+  transition: color 140ms ease;
+}
+
+.journal-text-link:hover {
+  color: #ffffff;
+}
+
+/* Empty State Ledger */
+.journal-empty-ledger {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+}
+
+.journal-empty-ledger-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Ledger List Cards */
+.journal-ledger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.journal-entry-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  cursor: pointer;
+  outline: none;
+}
+
+.journal-entry-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+.journal-entry-card-active {
+  border-color: rgba(216, 180, 254, 0.9) !important;
+  box-shadow: 0 0 0 2px rgba(216, 180, 254, 0.3), 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+.journal-card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.journal-btn-inspect {
+  font-size: 0.72rem;
+  font-weight: 550;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  color: #a8a29e;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.journal-btn-inspect:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.journal-card-headline {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #f1f0f4;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.35;
+}
+
+.journal-card-detail {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #a8a29e;
+  margin: 0 0 0.65rem 0;
+}
+
+.journal-card-lesson-quote {
+  font-family: var(--font-newsreader, "Newsreader"), Georgia, serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #d6d3d1;
+  line-height: 1.45;
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(216, 180, 254, 0.7);
+}
+
+/* ==========================================================================
+   7. RESPONSIVE & ACCESSIBILITY ADAPTATIONS
+   ========================================================================== */
+
+@media (max-width: 1100px) {
+  .journal-cinematic-hero-art {
+    object-position: 58% center;
+  }
+
+  .journal-cinematic-content {
+    top: 16%;
+    left: 5vw;
+    max-width: 480px;
+  }
+
+  .journal-cinematic-title {
+    font-size: clamp(3.6rem, 6.2vw, 4.4rem);
+    line-height: 0.92;
+  }
+
+  .journal-cinematic-description {
+    font-size: clamp(1rem, 1.3vw, 1.125rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .journal-workspace-section {
+    padding: 3rem 1rem 6rem;
+  }
+
+  .crystal-journal-cube {
+    padding: 1.65rem 1.25rem;
+    border-radius: 20px;
+  }
+
+  .crystal-cube-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .crystal-header-left,
+  .crystal-header-right {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .crystal-phase-select {
+    width: 100%;
+  }
+
+  .crystal-cube-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+  }
+
+  .crystal-footer-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .crystal-btn-primary,
+  .crystal-btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .journal-cinematic-hero {
+    min-height: 94svh;
+  }
+
+  .journal-cinematic-hero-art {
+    object-position: 68% 10%;
+  }
+
+  .journal-cinematic-hero::before {
+    background: linear-gradient(
+      180deg,
+      rgba(24, 7, 40, 0.1) 0%,
+      rgba(24, 7, 40, 0.3) 36%,
+      rgba(20, 6, 36, 0.85) 66%,
+      rgba(16, 5, 28, 0.96) 100%
+    );
+  }
+
+  .journal-cinematic-content {
+    top: auto;
+    left: 1.25rem;
+    bottom: 2rem;
+    width: calc(100% - 2.5rem);
+    max-width: none;
+    transform: none;
+  }
+
+  .journal-cinematic-eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .journal-cinematic-title {
+    margin-bottom: 1.25rem;
+    font-size: clamp(3.2rem, 15vw, 4rem);
+  }
+
+  .journal-cinematic-description {
+    margin-bottom: 1.25rem;
+    font-size: 0.95rem;
+    line-height: 1.54;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crystal-journal-cube,
+  .crystal-btn-primary,
+  .crystal-btn-secondary,
+  .journal-hero-back-link {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}

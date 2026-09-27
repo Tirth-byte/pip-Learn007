@@ -11,6 +11,8 @@ import { DocArticleClient } from "./doc-article-client";
 import { DocChapterData } from "@/lib/docs/types";
 import { useManualProgress } from "@/learning-state/manual-progress";
 import { ChevronLeft, ChevronRight, CheckCircle2, ArrowRight } from "lucide-react";
+import "@/styles/authenticated.css";
+import "@/app/learn/doc-reader.css";
 
 interface DocReaderLayoutProps {
   chapter: DocChapterData;
@@ -58,18 +60,18 @@ export function DocReaderLayout({
   };
 
   return (
-    <div className="doc-reader-root min-h-screen flex flex-col bg-background text-foreground selection:bg-primary/20 selection:text-foreground">
-      {/* Top Header */}
+    <div className="doc-reader-root auth-env-manual min-h-screen flex flex-col text-foreground selection:bg-foreground selection:text-background">
+      {/* Top Contextual Header & Mobile Drawer Button */}
       <DocHeader
         isSidebarOpen={isSidebarOpen}
         onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
       />
 
-      {/* Main Container */}
-      <div className="flex-1 flex max-w-[1400px] w-full mx-auto justify-between">
+      {/* Main Reader Canvas */}
+      <div className="flex-1 flex max-w-7xl w-full mx-auto justify-between px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Desktop Left Sidebar: 11-section curriculum navigation */}
-        <div className="hidden lg:block w-[230px] shrink-0 border-r border-border/70">
-          <div className="sticky top-13 h-[calc(100vh-3.25rem)] overflow-y-auto">
+        <div className="hidden lg:block w-[240px] shrink-0 border-r border-foreground/10 py-2 pr-5">
+          <div className="sticky top-28 h-[calc(100vh-8.5rem)] overflow-y-auto pr-2">
             <DocSidebar
               currentSectionId={chapter.metadata.section}
               routePrefix={routePrefix}
@@ -81,11 +83,11 @@ export function DocReaderLayout({
         {isSidebarOpen && (
           <div className="fixed inset-0 z-50 lg:hidden">
             <div
-              className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
+              className="fixed inset-0 bg-black/60 backdrop-blur-md transition-opacity"
               onClick={() => setIsSidebarOpen(false)}
               aria-hidden="true"
             />
-            <div className="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-background border-r border-border shadow-xl z-10 flex flex-col">
+            <div className="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-background/95 backdrop-blur-2xl border-r border-foreground/10 shadow-2xl z-10 flex flex-col p-6">
               <DocSidebar
                 currentSectionId={chapter.metadata.section}
                 onNavigate={() => setIsSidebarOpen(false)}
@@ -99,9 +101,9 @@ export function DocReaderLayout({
         <main
           id="main-content"
           tabIndex={-1}
-          className="flex-1 min-w-0 px-5 sm:px-10 md:px-14 lg:px-16 py-7 lg:py-9 max-w-[820px] mx-auto outline-none"
+          className="flex-1 min-w-0 px-2 sm:px-6 lg:px-10 max-w-[840px] mx-auto outline-none"
         >
-          <article className="prose-container">
+          <article className="doc-reader-surface p-6 sm:p-12 lg:p-14">
             {/* Metadata Header */}
             <DocMetadataBanner metadata={chapter.metadata} />
 
@@ -109,19 +111,19 @@ export function DocReaderLayout({
             <DocArticleClient htmlContent={chapter.htmlContent} />
 
             {/* Section Completion Action Bar */}
-            <div className="auth-section-completion-bar mt-16">
+            <div className="auth-surface-composed p-6 sm:p-8 mt-16 rounded-2xl">
               {!isLastSection ? (
-                <>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                   <div>
-                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <div className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                       Section Checkpoint
                     </div>
-                    <div className="text-sm font-medium text-foreground mt-0.5">
+                    <div className="text-base font-semibold text-foreground mt-1 tracking-tight">
                       {isCompleted
-                        ? "Section understood and marked complete"
+                        ? "Section marked complete"
                         : "Verified the examples in your terminal?"}
                     </div>
-                    <div className="text-xs text-muted-foreground mt-0.5">
+                    <div className="text-xs text-muted-foreground mt-1 font-mono">
                       Progress: {completedCount} of {totalCount} sections completed.
                     </div>
                   </div>
@@ -131,7 +133,7 @@ export function DocReaderLayout({
                       <button
                         type="button"
                         onClick={handleCompleteAndContinue}
-                        className="auth-primary-btn"
+                        className="auth-btn-primary"
                       >
                         <CheckCircle2 className="size-4" />
                         <span>Mark Complete & Next</span>
@@ -140,56 +142,49 @@ export function DocReaderLayout({
                     ) : chapter.nextSection ? (
                       <Link
                         href={`${routePrefix}/${chapter.nextSection.slug}/`}
-                        className="auth-primary-btn"
+                        className="auth-btn-primary"
                       >
                         <span>Next Section</span>
                         <ArrowRight className="size-4" />
                       </Link>
                     ) : null}
                   </div>
-                </>
+                </div>
               ) : (
                 /* Section 11 Final Handoff to Terminal Ledger */
                 <div className="w-full">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">
+                  <div className="flex items-center gap-2 text-xs font-mono font-semibold text-emerald-500 uppercase tracking-wider mb-2">
                     <CheckCircle2 className="size-4" />
                     <span>Final Foundation Section</span>
                   </div>
-                  <div className="text-base font-bold text-foreground">
+                  <div className="text-xl font-bold text-foreground tracking-tight">
                     You have completed the Starting Manual curriculum.
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1 max-w-xl leading-relaxed">
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-2 max-w-xl leading-relaxed">
                     You have built foundational mental models for Python variables, loops, data structures, functions, tracebacks, and documentation literacy. You are ready to start Project 1: Terminal Ledger.
                   </p>
 
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <div className="mt-6 flex flex-wrap items-center gap-4">
                     {!isCompleted ? (
                       <button
                         type="button"
                         onClick={() => markComplete(slug)}
-                        className="auth-primary-btn"
+                        className="auth-btn-primary"
                       >
                         <CheckCircle2 className="size-4" />
                         <span>Mark Foundation Complete</span>
                       </button>
                     ) : (
-                      <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-medium px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">
+                      <span className="text-xs font-mono text-emerald-500 font-medium px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                         ✓ All 11 Sections Complete
                       </span>
                     )}
 
-                    {isCompleted && (
-                      <Link
-                        href="/projects/terminal-ledger/"
-                        className="auth-primary-btn"
-                      >
-                        <span>Start Project: Terminal Ledger</span>
-                        <ArrowRight className="size-4" />
-                      </Link>
-                    )}
-
-                    <Link href="/home/" className="auth-secondary-btn">
-                      <span>Return to Home Workspace</span>
+                    <Link
+                      href="/projects/"
+                      className="auth-btn-primary"
+                    >
+                      <span>Proceed to Terminal Ledger</span>
                       <ArrowRight className="size-4" />
                     </Link>
                   </div>
@@ -197,21 +192,15 @@ export function DocReaderLayout({
               )}
             </div>
 
-            {/* Bottom Section Navigation */}
-            <nav
-              aria-label="Previous and next section navigation"
-              className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-sm"
-            >
+            {/* Bottom Section Pager */}
+            <div className="flex items-center justify-between border-t border-foreground/10 pt-8 mt-12 text-xs font-mono">
               {chapter.prevSection ? (
                 <Link
                   href={`${routePrefix}/${chapter.prevSection.slug}/`}
-                  className="w-full sm:w-auto flex flex-col text-left group transition-colors"
+                  className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors group"
                 >
-                  <span className="text-xs text-muted-foreground/80 mb-1">Previous</span>
-                  <div className="text-foreground group-hover:text-primary flex items-center gap-1.5 transition-colors">
-                    <ChevronLeft className="h-4 w-4 shrink-0 transition-transform group-hover:-translate-x-0.5" />
-                    <span className="truncate">{chapter.prevSection.title}</span>
-                  </div>
+                  <ChevronLeft className="size-4 transition-transform group-hover:-translate-x-0.5" />
+                  <span>{chapter.prevSection.title}</span>
                 </Link>
               ) : (
                 <div />
@@ -220,33 +209,21 @@ export function DocReaderLayout({
               {chapter.nextSection ? (
                 <Link
                   href={`${routePrefix}/${chapter.nextSection.slug}/`}
-                  className="w-full sm:w-auto flex flex-col text-right ml-auto group transition-colors"
+                  className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors group font-semibold text-right"
                 >
-                  <span className="text-xs text-muted-foreground/80 mb-1">Next Section</span>
-                  <div className="text-foreground group-hover:text-primary flex items-center gap-1.5 justify-end transition-colors">
-                    <span className="truncate">{chapter.nextSection.title}</span>
-                    <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
-                  </div>
+                  <span>{chapter.nextSection.title}</span>
+                  <ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               ) : (
-                <Link
-                  href="/home/"
-                  className="w-full sm:w-auto flex flex-col text-right ml-auto group transition-colors"
-                >
-                  <span className="text-xs text-muted-foreground/80 mb-1">Curriculum Complete</span>
-                  <div className="text-foreground group-hover:text-primary flex items-center gap-1.5 justify-end transition-colors font-medium">
-                    <span>Return to Home Workspace</span>
-                    <ArrowRight className="h-4 w-4 shrink-0" />
-                  </div>
-                </Link>
+                <div />
               )}
-            </nav>
+            </div>
           </article>
         </main>
 
-        {/* Desktop Right Rail: Quiet Orientation Aid (Table of Contents) */}
-        <div className="hidden xl:block w-[220px] shrink-0 border-l border-border/50">
-          <div className="sticky top-13 h-[calc(100vh-3.25rem)] overflow-y-auto py-7 px-4">
+        {/* Desktop Right TOC Sidebar */}
+        <div className="hidden xl:block w-[220px] shrink-0 py-6 pl-4">
+          <div className="sticky top-20">
             <DocToc items={chapter.toc} />
           </div>
         </div>

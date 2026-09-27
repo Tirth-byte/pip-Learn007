@@ -72,7 +72,7 @@ export function MentorCheckpointBanner({
 
   if (isCleared) {
     return (
-      <div className="p-6 rounded-lg border border-emerald-500/30 bg-emerald-500/5 mt-8">
+      <div className="p-6 sm:p-8 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.04] mt-8">
         <div className="flex items-start gap-3.5">
           <div className="p-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5">
             <CheckCircle2 className="size-5" />
@@ -123,9 +123,9 @@ export function MentorCheckpointBanner({
   }
 
   return (
-    <div className="p-6 rounded-lg border-2 border-primary/40 bg-card shadow-sm mt-8 relative overflow-hidden">
+    <div className="p-6 sm:p-8 rounded-2xl border border-amber-500/35 bg-amber-500/[0.04] mt-8 relative overflow-hidden">
       <div className="flex items-start gap-3.5">
-        <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0 mt-0.5">
+        <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5">
           <ShieldAlert className="size-5" />
         </div>
 

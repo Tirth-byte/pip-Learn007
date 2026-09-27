@@ -17,14 +17,24 @@ import { useManualProgress } from "@/learning-state/manual-progress";
 import { useAppContext } from "@/context/app-context";
 import "@/styles/authenticated.css";
 
+export type AuthEnvironment =
+  | "home"
+  | "manual"
+  | "projects"
+  | "build"
+  | "journal"
+  | "mentors"
+  | "checkpoint";
+
 interface AuthShellProps {
   children: React.ReactNode;
   activeItem?: "home" | "learn" | "projects" | "journal" | "mentors";
+  environment?: AuthEnvironment;
 }
 
 function PipLearnNavLogo() {
   return (
-    <svg viewBox="0 0 48 48" className="size-7" fill="none" aria-label="PipLearn Home">
+    <svg viewBox="0 0 48 48" className="size-6 text-foreground" fill="none" aria-label="PipLearn Home">
       {/* PipLearn 3-Tier Layered Diamond Logo */}
       {/* Top Layer */}
       <path d="M24 7 L38 15 L24 23 L10 15 Z" fill="currentColor" className="text-primary" />
@@ -36,7 +46,7 @@ function PipLearnNavLogo() {
   );
 }
 
-export function AuthShell({ children, activeItem }: AuthShellProps) {
+export function AuthShell({ children, activeItem, environment }: AuthShellProps) {
   const pathname = usePathname() || "";
   const { resumeSection } = useManualProgress();
   const { user } = useAppContext();
@@ -55,29 +65,106 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
       ? "mentors"
       : "home");
 
+  // Derive environmental mood from prop or pathname
+  const resolvedEnv: AuthEnvironment =
+    environment ||
+    (pathname.startsWith("/manual") || pathname.startsWith("/learn")
+      ? "manual"
+      : pathname.includes("/phases/")
+      ? "build"
+      : pathname.includes("/review") || pathname.includes("/checkpoints/")
+      ? "checkpoint"
+      : pathname.startsWith("/projects")
+      ? "projects"
+      : pathname.startsWith("/journal")
+      ? "journal"
+      : pathname.startsWith("/mentors")
+      ? "mentors"
+      : "home");
+
   const learnHref = `/manual/${resumeSection.slug}/`;
   const userInitial = user.firstName ? user.firstName.charAt(0).toUpperCase() : "L";
 
   return (
-    <div className="piplearn-auth-shell min-h-screen flex flex-col md:flex-row bg-background text-foreground">
-      {/* Mobile Top Header */}
-      <header className="md:hidden sticky top-0 z-40 h-13 border-b border-border bg-background/95 backdrop-blur-xs flex items-center justify-between px-4">
-        <Link href="/home/" className="flex items-center gap-2.5 text-sm font-semibold tracking-tight text-foreground">
-          <PipLearnNavLogo />
-          <span>PipLearn</span>
-        </Link>
+    <div className={`piplearn-auth-shell auth-env-${resolvedEnv} min-h-screen flex flex-col text-foreground`}>
+      {/* Floating Top Minimal Navigation Header */}
+      <header className="auth-floating-nav">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-15 flex items-center justify-between">
+          {/* Left: PipLearn Brand Identity linking to Home */}
+          <div className="flex items-center gap-8">
+            <Link
+              href="/home/"
+              className="flex items-center gap-2.5 group py-1.5 focus-visible:outline-2 focus-visible:outline-primary rounded-md"
+              title="PipLearn Home"
+            >
+              <PipLearnNavLogo />
+              <span className="font-semibold text-[15px] tracking-tight text-foreground transition-opacity group-hover:opacity-80">
+                PipLearn
+              </span>
+            </Link>
 
-        <div className="flex items-center gap-2">
-          <ThemeToggle align="bottom" />
+            {/* Desktop Navigation Links */}
+            <nav className="hidden md:flex items-center gap-1" aria-label="Main Navigation">
+              <Link
+                href={learnHref}
+                className={`auth-nav-link ${currentActive === "learn" ? "active" : ""}`}
+                aria-current={currentActive === "learn" ? "page" : undefined}
+                title="Starting Manual"
+              >
+                Learn
+              </Link>
 
-          <button
-            type="button"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-            aria-label={isMobileMenuOpen ? "Close navigation" : "Open navigation"}
-          >
-            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+              <Link
+                href="/projects/"
+                className={`auth-nav-link ${currentActive === "projects" ? "active" : ""}`}
+                aria-current={currentActive === "projects" ? "page" : undefined}
+                title="Projects"
+              >
+                Projects
+              </Link>
+
+              <Link
+                href="/journal/"
+                className={`auth-nav-link ${currentActive === "journal" ? "active" : ""}`}
+                aria-current={currentActive === "journal" ? "page" : undefined}
+                title="Problem Journal"
+              >
+                Journal
+              </Link>
+
+              <Link
+                href="/mentors/"
+                className={`auth-nav-link ${currentActive === "mentors" ? "active" : ""}`}
+                aria-current={currentActive === "mentors" ? "page" : undefined}
+                title="Mentors & Checkpoints"
+              >
+                Mentors
+              </Link>
+            </nav>
+          </div>
+
+          {/* Right: Controls & Learner Avatar */}
+          <div className="flex items-center gap-3">
+            <ThemeToggle align="bottom" />
+
+            <div
+              className="hidden sm:flex size-8 rounded-full bg-foreground/10 text-foreground items-center justify-center text-xs font-semibold select-none border border-foreground/15"
+              title={`Signed in as ${user.name || "Learner"}`}
+              aria-label={`User profile: ${user.name || "Learner"}`}
+            >
+              {userInitial}
+            </div>
+
+            {/* Mobile Hamburger Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+              aria-label={isMobileMenuOpen ? "Close navigation" : "Open navigation"}
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -85,17 +172,21 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-xs"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
             aria-hidden="true"
           />
-          <div className="fixed inset-y-0 left-0 w-64 max-w-[80vw] bg-background border-r border-border shadow-2xl p-5 flex flex-col justify-between z-10">
+          <div className="fixed inset-y-0 left-0 w-72 max-w-[80vw] bg-background/95 backdrop-blur-2xl border-r border-border/80 shadow-2xl p-6 flex flex-col justify-between z-10">
             <div>
               <div className="flex items-center justify-between pb-4 border-b border-border">
-                <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <Link
+                  href="/home/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 text-sm font-semibold text-foreground"
+                >
                   <PipLearnNavLogo />
                   <span>PipLearn</span>
-                </div>
+                </Link>
                 <button
                   type="button"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -106,14 +197,14 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
                 </button>
               </div>
 
-              <nav className="mt-5 space-y-1" aria-label="Mobile Navigation">
+              <nav className="mt-6 space-y-1.5" aria-label="Mobile Navigation">
                 <Link
                   href="/home/"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     currentActive === "home"
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-foreground/10 text-foreground font-semibold"
+                      : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                   }`}
                 >
                   <Home className="h-4 w-4" />
@@ -123,10 +214,10 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
                 <Link
                   href={learnHref}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     currentActive === "learn"
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-foreground/10 text-foreground font-semibold"
+                      : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                   }`}
                 >
                   <BookOpen className="h-4 w-4" />
@@ -136,10 +227,10 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
                 <Link
                   href="/projects/"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     currentActive === "projects"
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-foreground/10 text-foreground font-semibold"
+                      : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                   }`}
                 >
                   <FolderKanban className="h-4 w-4" />
@@ -149,10 +240,10 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
                 <Link
                   href="/journal/"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     currentActive === "journal"
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-foreground/10 text-foreground font-semibold"
+                      : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                   }`}
                 >
                   <NotebookPen className="h-4 w-4" />
@@ -162,10 +253,10 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
                 <Link
                   href="/mentors/"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     currentActive === "mentors"
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-foreground/10 text-foreground font-semibold"
+                      : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                   }`}
                 >
                   <Users className="h-4 w-4" />
@@ -176,10 +267,10 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
 
             <div className="pt-4 border-t border-border flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="size-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-semibold">
+                <div className="size-8 rounded-full bg-foreground/10 text-foreground flex items-center justify-center text-xs font-semibold">
                   {userInitial}
                 </div>
-                <div className="text-xs truncate max-w-[120px]">
+                <div className="text-xs truncate max-w-[130px]">
                   <div className="font-medium text-foreground truncate">{user.name || "Learner"}</div>
                   <div className="text-[10px] text-muted-foreground truncate">{user.email || "Workspace"}</div>
                 </div>
@@ -191,95 +282,8 @@ export function AuthShell({ children, activeItem }: AuthShellProps) {
         </div>
       )}
 
-      {/* Desktop Left Rail */}
-      <aside className="auth-nav-rail hidden md:flex" aria-label="Authenticated Navigation Rail">
-        {/* Top: Logo */}
-        <div className="flex flex-col items-center gap-6">
-          <Link
-            href="/home/"
-            className="flex items-center justify-center p-1.5 rounded-lg hover:opacity-85 transition-opacity"
-            title="PipLearn Home"
-          >
-            <PipLearnNavLogo />
-          </Link>
-
-          {/* Primary Navigation Stack */}
-          <nav className="flex flex-col items-center gap-2" aria-label="Main Navigation">
-            <Link
-              href="/home/"
-              className={`auth-nav-item ${currentActive === "home" ? "active" : ""}`}
-              aria-label="Home"
-              aria-current={currentActive === "home" ? "page" : undefined}
-              title="Home"
-            >
-              <Home className="h-4 w-4" />
-              <span className="auth-nav-label">Home</span>
-            </Link>
-
-            <Link
-              href={learnHref}
-              className={`auth-nav-item ${currentActive === "learn" ? "active" : ""}`}
-              aria-label="Learn"
-              aria-current={currentActive === "learn" ? "page" : undefined}
-              title="Learn (Starting Manual)"
-            >
-              <BookOpen className="h-4 w-4" />
-              <span className="auth-nav-label">Learn</span>
-            </Link>
-
-            <Link
-              href="/projects/"
-              className={`auth-nav-item ${currentActive === "projects" ? "active" : ""}`}
-              aria-label="Projects"
-              aria-current={currentActive === "projects" ? "page" : undefined}
-              title="Projects"
-            >
-              <FolderKanban className="h-4 w-4" />
-              <span className="auth-nav-label">Projects</span>
-            </Link>
-
-            <Link
-              href="/journal/"
-              className={`auth-nav-item ${currentActive === "journal" ? "active" : ""}`}
-              aria-label="Journal"
-              aria-current={currentActive === "journal" ? "page" : undefined}
-              title="Problem Journal"
-            >
-              <NotebookPen className="h-4 w-4" />
-              <span className="auth-nav-label">Journal</span>
-            </Link>
-
-            <Link
-              href="/mentors/"
-              className={`auth-nav-item ${currentActive === "mentors" ? "active" : ""}`}
-              aria-label="Mentors"
-              aria-current={currentActive === "mentors" ? "page" : undefined}
-              title="Mentors & Checkpoints"
-            >
-              <Users className="h-4 w-4" />
-              <span className="auth-nav-label">Mentors</span>
-            </Link>
-          </nav>
-        </div>
-
-        {/* Bottom Utility Area */}
-        <div className="flex flex-col items-center gap-3">
-          {/* 3-State Theme Selector */}
-          <ThemeToggle align="right" />
-
-          {/* Minimal User Affordance */}
-          <div
-            className="size-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-semibold cursor-default select-none border border-primary/20"
-            title={`Signed in as ${user.name || "Learner"}`}
-            aria-label={`User profile: ${user.name || "Learner"}`}
-          >
-            {userInitial}
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <div className="flex-1 min-w-0 flex flex-col">
+      {/* Main Content Area: Takes Full Width and Breathes in Environment */}
+      <div className="flex-1 flex flex-col min-w-0">
         {children}
       </div>
     </div>

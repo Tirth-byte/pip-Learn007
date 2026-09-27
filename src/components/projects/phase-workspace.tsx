@@ -23,6 +23,8 @@ import { ProblemJournalDrawer } from "./problem-journal-drawer";
 import { HelpLadderDrawer } from "./help-ladder-drawer";
 import { useTerminalLedgerProgress } from "@/learning-state/terminal-ledger-progress";
 import { useProblemJournal } from "@/learning-state/problem-journal";
+import "@/styles/authenticated.css";
+import "@/app/learn/doc-reader.css";
 
 interface PhaseWorkspaceProps {
   milestoneData: PhaseMilestoneData;
@@ -108,7 +110,6 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
   };
 
   const handleVerifyAndComplete = () => {
-    // Ensure project is marked started if not already
     startProject();
     completePhase(phase.slug);
   };
@@ -120,38 +121,40 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-background text-foreground">
-      {/* Top Workspace Header & Context */}
-      <header className="sticky top-0 z-30 border-b border-border/80 bg-background/95 backdrop-blur-xs px-4 sm:px-8 py-3">
-        <div className="max-w-[1340px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
+    <div className="doc-reader-root min-h-screen flex flex-col text-foreground selection:bg-foreground selection:text-background">
+      {/* ============================================================== */}
+      {/* 1. QUIET TOP WORKSPACE STEPPER SUB-HEADER                      */}
+      {/* ============================================================== */}
+      <header className="sticky top-15 z-30 border-b border-foreground/8 bg-background/80 backdrop-blur-xl px-4 sm:px-8 py-3 transition-colors">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Breadcrumb Trail */}
-          <nav className="flex items-center gap-2 text-xs font-mono" aria-label="Breadcrumb">
+          <nav className="flex items-center gap-2 text-xs font-mono text-muted-foreground" aria-label="Breadcrumb">
             <Link
               href="/projects/"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="hover:text-foreground transition-colors"
             >
               Projects
             </Link>
-            <span className="text-muted-foreground/60">/</span>
+            <span className="text-foreground/20">/</span>
             <Link
-              href="/projects/terminal-ledger/"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              href="/projects/#roadmap"
+              className="hover:text-foreground transition-colors"
             >
               Terminal Ledger
             </Link>
-            <span className="text-muted-foreground/60">/</span>
+            <span className="text-foreground/20">/</span>
             <span className="text-foreground font-semibold">
               Phase {phase.number} of 9
             </span>
             {phase.number > currentPhase.number && (
-              <span className="text-[10.5px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground ml-1">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-foreground/5 text-muted-foreground ml-1">
                 Browsing
               </span>
             )}
           </nav>
 
           {/* Quiet Phase Navigation Stepper */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
             {TERMINAL_LEDGER_PHASES.map((p) => {
               const isPCompleted = isPhaseCompleted(p.slug);
               const isPViewing = p.slug === phase.slug;
@@ -161,20 +164,20 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
                 <Link
                   key={p.slug}
                   href={`/projects/terminal-ledger/phases/${p.slug}/`}
-                  className={`px-2.5 py-1 rounded text-xs font-mono transition-all flex items-center gap-1.5 shrink-0 ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1.5 shrink-0 ${
                     isPViewing
-                      ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                      ? "bg-foreground text-background font-medium shadow-xs"
                       : isPCompleted
-                      ? "bg-muted/70 text-foreground hover:bg-muted"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                      ? "bg-foreground/5 text-foreground hover:bg-foreground/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
                   }`}
                   title={`${p.number}. ${p.title}${isPActiveProgress ? " (Active Progress)" : ""}`}
                   aria-current={isPViewing ? "page" : undefined}
                 >
                   {isPCompleted && !isPViewing ? (
-                    <CheckCircle2 className="size-3 text-emerald-600 dark:text-emerald-400" />
+                    <CheckCircle2 className="size-3 text-emerald-500" />
                   ) : null}
-                  <span>P{p.number}</span>
+                  <span>P{p.number < 10 ? `0${p.number}` : p.number}</span>
                 </Link>
               );
             })}
@@ -182,41 +185,62 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <div className="flex-1 max-w-[1340px] w-full mx-auto px-4 sm:px-8 py-8 flex flex-col lg:flex-row gap-10">
-        {/* Center: Milestone Brief Reader */}
-        <main className="flex-1 min-w-0 max-w-3xl">
-          {/* Brief Meta Header */}
-          <div className="mb-8 pb-6 border-b border-border/70">
-            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1.5">
-              <span>Terminal Ledger · Milestone Brief</span>
-              <span>·</span>
-              <span>Phase {phase.number}</span>
+      {/* ============================================================== */}
+      {/* 2. MAIN WORKSPACE CONTAINER                                    */}
+      {/* ============================================================== */}
+      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 lg:px-10 py-8 lg:py-10 flex flex-col lg:flex-row gap-10">
+
+        {/* Center: Dominant Milestone Brief & Verification Canvas */}
+        <main id="main-content" tabIndex={-1} className="flex-1 min-w-0 max-w-4xl outline-none">
+          {/* Phase Orientation Hero Header */}
+          <div className="mb-8 pb-8 border-b border-foreground/10">
+            {/* Eyebrow */}
+            <div className="flex flex-wrap items-center gap-3 text-xs mb-3 font-mono">
+              <span className="font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Terminal Ledger · Milestone Brief
+              </span>
+              <span className="text-foreground/20">•</span>
+              <span className="text-foreground font-semibold">
+                Phase {phase.number} of 9
+              </span>
+              {isCompleted && (
+                <span className="inline-flex items-center gap-1 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium border border-emerald-500/20">
+                  <CheckCircle2 className="size-3" />
+                  <span>Verified & Complete</span>
+                </span>
+              )}
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-foreground">
+            {/* Editorial Title */}
+            <h1 className="text-3xl sm:text-4xl lg:text-[2.85rem] font-semibold tracking-[-0.035em] text-foreground leading-[1.12] mb-4 text-balance">
               {phase.title}
             </h1>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-border/40">
-              <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+            {/* Concise Functional Orientation Summary: "What am I building right now?" */}
+            <p className="text-base sm:text-lg text-muted-foreground font-light leading-relaxed mb-6 max-w-3xl">
+              {phase.summary}
+            </p>
+
+            {/* Contextual Action & Metadata Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-foreground/10">
+              <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-muted-foreground">
                 <div className="flex items-center gap-1.5">
-                  <Clock className="size-3.5" />
-                  <span>Estimated: {phase.estimatedTime}</span>
+                  <Clock className="size-3.5 text-muted-foreground/70" />
+                  <span>{phase.estimatedTime} Expected</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-muted-foreground/60">·</span>
+                <span className="text-foreground/20">·</span>
+                <div>
                   <span>Prerequisites: {phase.prerequisites}</span>
                 </div>
               </div>
 
-              {/* Quiet Struggle Support Actions */}
+              {/* Integrated Contextual Tools: "Where do I look when stuck?" */}
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleOpenJournal}
-                  className="auth-secondary-btn py-1 px-2.5 text-xs inline-flex items-center gap-1.5"
-                  title="Open Problem Journal"
+                  className="auth-btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 h-8.5"
+                  title="Document technical reflections and debugging history"
                 >
                   <NotebookPen className="size-3.5" />
                   <span>Problem Journal</span>
@@ -224,11 +248,12 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
                     <span className="size-1.5 rounded-full bg-amber-500" />
                   )}
                 </button>
+
                 <button
                   type="button"
                   onClick={handleOpenHelpLadder}
-                  className="auth-secondary-btn py-1 px-2.5 text-xs inline-flex items-center gap-1.5 text-primary border-primary/30 hover:border-primary/60"
-                  title="Get Unstuck via evidence-gated Help Ladder"
+                  className="auth-btn-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 h-8.5 font-medium"
+                  title="Access evidence-gated debugging assistance"
                 >
                   <Compass className="size-3.5" />
                   <span>Get Unstuck</span>
@@ -237,207 +262,177 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
             </div>
           </div>
 
-          {/* Real Markdown Content */}
-          <div className="doc-article-wrapper">
-            <DocArticleClient htmlContent={htmlContent} />
-          </div>
+          {/* ============================================================== */}
+          {/* PRIMARY WORK SURFACE: MONOLITHIC READING CANVAS                */}
+          {/* ============================================================== */}
+          <article className="doc-reader-surface p-6 sm:p-12 lg:p-14 mb-14">
+            {/* Real Markdown Content */}
+            <div className="doc-article-wrapper">
+              <DocArticleClient htmlContent={htmlContent} />
+            </div>
 
-          {/* Phase Verification & Behavioral Gate */}
-          <section
-            aria-labelledby="verification-heading"
-            className="mt-14 pt-8 border-t border-border/80"
-          >
-            <div className="p-6 sm:p-8 rounded-xl border border-border bg-card shadow-xs space-y-6">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-primary mb-1">
-                  <Terminal className="size-3.5" />
-                  <span>Local Execution Verification</span>
+            {/* ============================================================== */}
+            {/* BEHAVIORAL VERIFICATION & COMPLETION GATE                      */}
+            {/* ============================================================== */}
+            <section
+              aria-labelledby="verification-heading"
+              className="mt-16 pt-10 border-t border-foreground/10"
+            >
+              <div className="auth-surface-composed p-6 sm:p-10 rounded-2xl space-y-6">
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-[0.14em] text-muted-foreground mb-2">
+                    <Terminal className="size-3.5 text-foreground/70" />
+                    <span>Local Terminal Execution Verification</span>
+                  </div>
+                  <h2
+                    id="verification-heading"
+                    className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight"
+                  >
+                    Phase {phase.number} Behavioral Checklist
+                  </h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 leading-relaxed max-w-2xl">
+                    Demonstrate these behaviors locally in your terminal. Check each criterion once verified in your running code.
+                  </p>
                 </div>
-                <h2
-                  id="verification-heading"
-                  className="text-xl font-bold text-foreground tracking-tight"
-                >
-                  Phase {phase.number} Behavioral Checklist
-                </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
-                  Demonstrate these behaviors locally in your own terminal. Check each criterion as you verify that your program meets the specification.
-                </p>
-              </div>
 
-              {/* Behavioral criteria list */}
-              <div className="space-y-2.5 pt-2">
-                {phase.criteria.map((criterion, idx) => {
-                  const isChecked = checkedItems[idx] === true || isCompleted;
-                  return (
-                    <label
-                      key={idx}
-                      className={`flex items-start gap-3 p-3 rounded-lg border text-xs sm:text-sm transition-all cursor-pointer select-none ${
-                        isChecked
-                          ? "bg-primary/5 border-primary/30 text-foreground"
-                          : "bg-muted/20 border-border/70 text-muted-foreground hover:border-border hover:bg-muted/40"
+                {/* Behavioral criteria list */}
+                <div className="space-y-2.5 pt-1">
+                  {phase.criteria.map((criterion, idx) => {
+                    const isChecked = checkedItems[idx] === true || isCompleted;
+                    return (
+                      <label
+                        key={idx}
+                        className={`flex items-start gap-3.5 p-4 rounded-xl border text-xs sm:text-sm transition-all cursor-pointer select-none ${
+                          isChecked
+                            ? "bg-foreground/5 border-foreground/20 text-foreground"
+                            : "bg-foreground/[0.015] border-foreground/8 text-muted-foreground hover:border-foreground/15 hover:bg-foreground/[0.03]"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          disabled={isCompleted || isPrerequisiteCheckpointDue}
+                          onChange={() => toggleCheck(idx)}
+                          className="mt-0.5 size-4 rounded border-foreground/30 text-foreground focus:ring-foreground accent-foreground cursor-pointer"
+                        />
+                        <span className="leading-relaxed">{criterion}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                {/* Completion Action / Status */}
+                <div className="pt-4 border-t border-foreground/10 flex flex-wrap items-center justify-between gap-4">
+                  {isCompleted ? (
+                    <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-emerald-500 font-mono">
+                      <CheckCircle2 className="size-4.5" />
+                      <span>Phase {phase.number} Verified & Completed</span>
+                    </div>
+                  ) : isPrerequisiteCheckpointDue ? (
+                    <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/25 text-xs text-amber-800 dark:text-amber-200 w-full space-y-1">
+                      <div className="font-semibold text-xs font-mono">
+                        Prerequisite: Mentor Checkpoint {duePrerequisiteCheckpointNumber} Defense Required
+                      </div>
+                      <p className="text-xs leading-relaxed text-muted-foreground">
+                        You can plan this milestone in advance, but verification unlocks after Mentor Checkpoint {duePrerequisiteCheckpointNumber} defense sign-off.
+                      </p>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleVerifyAndComplete}
+                      disabled={!allChecked}
+                      className={`auth-btn-primary text-xs sm:text-sm ${
+                        !allChecked ? "opacity-40 cursor-not-allowed" : ""
                       }`}
                     >
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        disabled={isCompleted || isPrerequisiteCheckpointDue}
-                        onChange={() => toggleCheck(idx)}
-                        className="mt-0.5 size-4 rounded border-border text-primary focus:ring-primary focus:ring-offset-background"
-                      />
-                      <span className="leading-relaxed">{criterion}</span>
-                    </label>
-                  );
-                })}
-              </div>
+                      <CheckCircle2 className="size-4" />
+                      <span>Verify & Complete Phase {phase.number}</span>
+                      <ArrowRight className="size-4" />
+                    </button>
+                  )}
 
-              {/* Completion Action / Status */}
-              <div className="pt-4 border-t border-border/70 flex flex-wrap items-center justify-between gap-4">
-                {isCompleted ? (
-                  <div className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                    <CheckCircle2 className="size-4.5" />
-                    <span>Phase {phase.number} Verified & Completed</span>
-                  </div>
-                ) : isPrerequisiteCheckpointDue ? (
-                  <div className="p-3.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-200 w-full space-y-1">
-                    <div className="font-semibold text-[11.5px]">
-                      Prerequisite: Mentor Checkpoint {duePrerequisiteCheckpointNumber} Required
-                    </div>
-                    <p className="text-[11.5px] leading-relaxed text-muted-foreground">
-                      You can read and plan this milestone in advance, but behavioral verification unlocks only after Mentor Checkpoint {duePrerequisiteCheckpointNumber} sign-off.
-                    </p>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleVerifyAndComplete}
-                    disabled={!allChecked}
-                    className={`auth-primary-btn text-xs sm:text-sm py-2.5 px-5 ${
-                      !allChecked ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                  >
-                    <span>Verify & Complete Phase {phase.number}</span>
-                    <ArrowRight className="size-4" />
-                  </button>
+                  {isCompleted && !isCheckpointDue && nextPhase && (
+                    <button
+                      type="button"
+                      onClick={handleAdvanceToNext}
+                      className="auth-btn-secondary text-xs sm:text-sm"
+                    >
+                      <span>Advance to Phase {nextPhase.number}: {nextPhase.title}</span>
+                      <ChevronRight className="size-4" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Checkpoint Banners */}
+                {isCheckpointDue && (
+                  <MentorCheckpointBanner
+                    checkpointNumber={phase.checkpointNumber!}
+                    isCleared={isCheckpointClearedForThisPhase}
+                  />
                 )}
 
-                {/* Quiet next phase shortcut if completed and no active checkpoint block */}
-                {isCompleted && !isCheckpointDue && nextPhase && (
-                  <button
-                    type="button"
-                    onClick={handleAdvanceToNext}
-                    className="auth-secondary-btn text-xs sm:text-sm py-2 px-4"
-                  >
-                    <span>Advance to Phase {nextPhase.number} ({nextPhase.title})</span>
-                    <ChevronRight className="size-4" />
-                  </button>
+                {isCompleted && isCheckpointFollowed && isCheckpointClearedForThisPhase && (
+                  <MentorCheckpointBanner
+                    checkpointNumber={phase.checkpointNumber!}
+                    isCleared={true}
+                    onContinue={handleAdvanceToNext}
+                  />
                 )}
               </div>
+            </section>
 
-              {/* If Checkpoint is due after completing Phase 3, 6, or 9 */}
-              {isCheckpointDue && (
-                <MentorCheckpointBanner
-                  checkpointNumber={phase.checkpointNumber!}
-                  isCleared={isCheckpointClearedForThisPhase}
-                />
+            {/* Bottom Phase Navigation Pager */}
+            <nav
+              aria-label="Phase navigation"
+              className="mt-14 pt-8 border-t border-foreground/10 flex items-center justify-between text-xs font-mono"
+            >
+              {prevPhase ? (
+                <Link
+                  href={`/projects/terminal-ledger/phases/${prevPhase.slug}/`}
+                  className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ChevronLeft className="size-4" />
+                  <span>Phase {prevPhase.number}: {prevPhase.title}</span>
+                </Link>
+              ) : (
+                <div />
               )}
 
-              {/* If Checkpoint was already cleared */}
-              {isCompleted && isCheckpointFollowed && isCheckpointClearedForThisPhase && (
-                <MentorCheckpointBanner
-                  checkpointNumber={phase.checkpointNumber!}
-                  isCleared={true}
-                  onContinue={handleAdvanceToNext}
-                />
+              {nextPhase ? (
+                <Link
+                  href={`/projects/terminal-ledger/phases/${nextPhase.slug}/`}
+                  className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors font-medium"
+                >
+                  <span>Phase {nextPhase.number}: {nextPhase.title}</span>
+                  <ChevronRight className="size-4" />
+                </Link>
+              ) : isCompleted && isCheckpointClearedForThisPhase ? (
+                <Link
+                  href="/projects/terminal-ledger/review/"
+                  className="flex items-center gap-1.5 text-foreground hover:underline transition-colors font-medium"
+                >
+                  <span>Project Retrospective</span>
+                  <ChevronRight className="size-4" />
+                </Link>
+              ) : (
+                <div />
               )}
-            </div>
-          </section>
-
-          {/* Bottom Phase Navigation Footer */}
-          <nav
-            aria-label="Phase navigation"
-            className="mt-12 pt-6 border-t border-border/70 flex items-center justify-between text-xs"
-          >
-            {prevPhase ? (
-              <Link
-                href={`/projects/terminal-ledger/phases/${prevPhase.slug}/`}
-                className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ChevronLeft className="size-4" />
-                <span>Phase {prevPhase.number}: {prevPhase.title}</span>
-              </Link>
-            ) : (
-              <div />
-            )}
-
-            {nextPhase ? (
-              <Link
-                href={`/projects/terminal-ledger/phases/${nextPhase.slug}/`}
-                className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors font-medium"
-              >
-                <span>Phase {nextPhase.number}: {nextPhase.title}</span>
-                <ChevronRight className="size-4" />
-              </Link>
-            ) : isCompleted && isCheckpointClearedForThisPhase ? (
-              <Link
-                href="/projects/terminal-ledger/review/"
-                className="flex items-center gap-1.5 text-primary hover:underline transition-colors font-medium"
-              >
-                <span>Project Retrospective</span>
-                <ChevronRight className="size-4" />
-              </Link>
-            ) : (
-              <div />
-            )}
-          </nav>
+            </nav>
+          </article>
         </main>
 
-        {/* Right Aside: Struggle Support, Contextual Knowledge Packs & Local Workstation */}
+        {/* ============================================================== */}
+        {/* 3. CONTEXTUAL TOOLS COMPANION (RIGHT RAIL)                     */}
+        {/* ============================================================== */}
         <aside className="w-full lg:w-80 shrink-0 space-y-6">
-          <div className="sticky top-20 space-y-6">
-            {/* Struggle & Debugging Support Card */}
-            <div className="p-5 rounded-xl border border-border bg-card shadow-xs space-y-3">
-              <div className="flex items-center justify-between">
+          <div className="sticky top-28 space-y-6">
+            {/* Knowledge Packs Surface */}
+            <div className="auth-surface-composed p-6 rounded-2xl">
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-foreground/10">
                 <div className="flex items-center gap-2">
-                  <Compass className="size-4 text-primary" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-foreground">
-                    Struggle Support
-                  </span>
-                </div>
-                {currentPhaseDraft && (
-                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                    Draft Active
-                  </span>
-                )}
-              </div>
-              <p className="text-[11.5px] text-muted-foreground leading-relaxed">
-                Struggle is where durable understanding forms. Observe concrete evidence before escalating.
-              </p>
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={handleOpenJournal}
-                  className="auth-secondary-btn py-2 px-2 text-xs justify-center flex items-center gap-1.5"
-                >
-                  <NotebookPen className="size-3.5" />
-                  <span>Problem Journal</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={handleOpenHelpLadder}
-                  className="auth-secondary-btn py-2 px-2 text-xs justify-center flex items-center gap-1.5 text-primary border-primary/30 hover:border-primary/60"
-                >
-                  <Compass className="size-3.5" />
-                  <span>Get Unstuck</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Knowledge Packs Card */}
-            <div className="p-5 rounded-xl border border-border bg-card shadow-xs">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <BookOpen className="size-4 text-primary" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-foreground">
+                  <BookOpen className="size-4 text-foreground/80" />
+                  <span className="text-xs font-mono font-semibold uppercase tracking-[0.14em] text-foreground">
                     Knowledge Packs
                   </span>
                 </div>
@@ -446,68 +441,89 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
                 </span>
               </div>
 
-              {/* Phase 1 Special Case: Planning 01 integrated in brief */}
               {phase.number === 1 ? (
-                <div className="p-3.5 rounded-lg bg-muted/40 border border-border/70 text-xs text-muted-foreground space-y-2">
-                  <div className="font-medium text-foreground">
+                <div className="p-3.5 rounded-xl bg-foreground/[0.02] border border-foreground/8 text-xs text-muted-foreground space-y-1">
+                  <div className="font-semibold text-foreground">
                     Planning 01 Integrated
                   </div>
-                  <p className="text-[11.5px] leading-relaxed">
-                    Planning 01 curriculum is integrated directly into this milestone brief. No standalone knowledge packs are required for Phase 1.
+                  <p className="leading-relaxed text-[12px]">
+                    Phase 1 architectural curriculum is integrated directly into this milestone brief.
                   </p>
                 </div>
               ) : (
-                <div className="space-y-2.5">
-                  <p className="text-[11.5px] text-muted-foreground leading-relaxed">
-                    Contextual reference material for new capabilities introduced in this phase. Read when needed.
-                  </p>
-
-                  <div className="space-y-2 pt-1">
-                    {knowledgePacks.map((pack) => (
-                      <button
-                        key={pack.id}
-                        type="button"
-                        onClick={() => setActivePack(pack)}
-                        className="w-full text-left p-3 rounded-lg border border-border/80 bg-background hover:bg-muted/50 hover:border-primary/40 transition-all text-xs group"
-                      >
-                        <div className="font-semibold text-foreground group-hover:text-primary transition-colors flex items-center justify-between">
-                          <span>{pack.packName}</span>
-                          <span className="text-[10px] font-mono font-normal text-muted-foreground">
-                            {pack.estimatedTime}
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-muted-foreground mt-1 line-clamp-1">
-                          {pack.title}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+                <div className="space-y-2">
+                  {knowledgePacks.map((pack) => (
+                    <button
+                      key={pack.id}
+                      type="button"
+                      onClick={() => setActivePack(pack)}
+                      className="w-full text-left p-3.5 rounded-xl border border-foreground/8 bg-foreground/[0.015] hover:bg-foreground/[0.04] hover:border-foreground/15 transition-all group"
+                    >
+                      <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground mb-1">
+                        <span>{pack.estimatedTime}</span>
+                        <ChevronRight className="size-3 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                      <div className="font-medium text-xs text-foreground group-hover:text-foreground transition-colors leading-snug">
+                        {pack.title}
+                      </div>
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
 
-            {/* Local Workstation Reminder */}
-            <div className="p-5 rounded-xl border border-border bg-muted/20 text-xs space-y-3">
-              <div className="flex items-center gap-2 text-foreground font-semibold text-xs">
-                <Terminal className="size-4 text-muted-foreground" />
-                <span>Local Workstation</span>
+            {/* Struggle & Debugging Companion */}
+            <div className="auth-surface-composed p-6 rounded-2xl space-y-3">
+              <div className="flex items-center justify-between pb-3 border-b border-foreground/10">
+                <div className="flex items-center gap-2">
+                  <Compass className="size-4 text-foreground/80" />
+                  <span className="text-xs font-mono font-semibold uppercase tracking-[0.14em] text-foreground">
+                    Struggle Support
+                  </span>
+                </div>
+                {currentPhaseDraft && (
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium border border-amber-500/20">
+                    Draft Active
+                  </span>
+                )}
               </div>
-              <p className="text-[11.5px] text-muted-foreground leading-relaxed">
-                All code is written locally in your text editor and executed in your terminal with <code className="font-mono text-[11px] px-1 py-0.5 rounded bg-muted">python3</code>.
+
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Struggle is where understanding forms. Observe concrete runtime evidence before escalating.
               </p>
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={handleOpenJournal}
+                  className="auth-btn-secondary py-2 px-2 text-xs justify-center flex items-center gap-1.5 h-9"
+                >
+                  <NotebookPen className="size-3.5" />
+                  <span>Journal</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOpenHelpLadder}
+                  className="auth-btn-secondary py-2 px-2 text-xs justify-center flex items-center gap-1.5 h-9 font-medium"
+                >
+                  <Compass className="size-3.5" />
+                  <span>Get Unstuck</span>
+                </button>
+              </div>
             </div>
           </div>
         </aside>
       </div>
 
-      {/* Slide-over Knowledge Pack Reader Drawer */}
+      {/* ============================================================== */}
+      {/* 4. CONTEXTUAL DRAWERS (Knowledge Pack, Journal, Help Ladder)   */}
+      {/* ============================================================== */}
       <KnowledgePackDrawer
-        pack={activePack}
-        isOpen={Boolean(activePack)}
+        isOpen={activePack !== null}
         onClose={() => setActivePack(null)}
+        pack={activePack}
       />
 
-      {/* Slide-over Problem Journal Drawer */}
       <ProblemJournalDrawer
         isOpen={isJournalOpen}
         onClose={() => setIsJournalOpen(false)}
@@ -517,7 +533,6 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
         phaseNumber={phase.number}
       />
 
-      {/* Slide-over Help Ladder Drawer */}
       <HelpLadderDrawer
         isOpen={isHelpLadderOpen}
         onClose={() => setIsHelpLadderOpen(false)}
@@ -525,8 +540,8 @@ export function PhaseWorkspace({ milestoneData }: PhaseWorkspaceProps) {
         phaseSlug={phase.slug}
         phaseTitle={phase.title}
         phaseNumber={phase.number}
-        onOpenJournal={handleOpenJournalFromHelp}
         onOpenKnowledgePack={handleOpenKnowledgePackFromHelp}
+        onOpenJournal={handleOpenJournalFromHelp}
       />
     </div>
   );

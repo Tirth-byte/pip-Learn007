@@ -20,23 +20,26 @@ export function DocSidebar({
   const { isSectionCompleted, completedCount, totalCount } = useManualProgress();
 
   return (
-    <aside className="w-full h-full flex flex-col py-5 px-3 select-none" aria-label="Starting Manual Table of Contents">
-      <div className="mb-4 px-2">
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/75 font-mono">
+    <aside
+      className="w-full h-full flex flex-col py-4 px-2 select-none"
+      aria-label="Starting Manual Table of Contents"
+    >
+      <div className="mb-5 px-2.5">
+        <div className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80 font-mono">
+          Starting Manual
+        </div>
+        <div className="text-sm font-semibold text-foreground mt-0.5 tracking-tight">
           Foundation Curriculum
         </div>
-        <div className="text-[13px] font-semibold text-foreground mt-0.5">
-          Python Starting Manual
-        </div>
-        <div className="text-[11.5px] text-muted-foreground/70 mt-0.5 flex items-center justify-between">
-          <span>11 Foundational Sections</span>
-          <span className="font-mono text-[10.5px]">
-            {completedCount}/{totalCount} Done
+        <div className="text-xs text-muted-foreground mt-1.5 flex items-center justify-between font-mono">
+          <span>11 Sections</span>
+          <span className="text-[11px] text-foreground/80">
+            {completedCount}/{totalCount} Complete
           </span>
         </div>
       </div>
 
-      <nav aria-label="Manual Sections" className="flex-1 space-y-0.5 overflow-y-auto pr-1">
+      <nav aria-label="Manual Sections" className="flex-1 space-y-1 overflow-y-auto pr-1">
         {STARTING_MANUAL_SECTIONS.map((section) => {
           const isActive = section.id === currentSectionId;
           const isCompleted = isSectionCompleted(section.slug);
@@ -47,37 +50,43 @@ export function DocSidebar({
               key={section.id}
               href={href}
               onClick={onNavigate}
-              className={`group flex items-center justify-between rounded-md px-2 py-1.5 text-[12.5px] transition-colors ${
+              className={`group flex items-center justify-between rounded-lg px-2.5 py-2 text-[13px] transition-all ${
                 isActive
-                  ? "bg-primary/10 text-primary dark:bg-primary/15 font-semibold"
-                  : "text-foreground hover:bg-muted"
+                  ? "bg-foreground text-background font-medium shadow-xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
               }`}
               aria-current={isActive ? "page" : undefined}
             >
-              <span className="flex items-center gap-2 truncate">
+              <span className="flex items-center gap-2.5 min-w-0">
                 <span
                   className={`font-mono text-[11px] shrink-0 ${
                     isActive
-                      ? "text-primary font-semibold"
+                      ? "text-background/80 font-semibold"
                       : isCompleted
-                      ? "text-emerald-600 dark:text-emerald-400 font-medium"
-                      : "text-muted-foreground/70"
+                      ? "text-emerald-500 font-medium"
+                      : "text-muted-foreground/60"
                   }`}
                 >
                   {section.id}
                 </span>
-                <span className="truncate">{section.title}</span>
+                <span className="truncate leading-tight">{section.title}</span>
               </span>
 
-              <span className="flex items-center gap-1 shrink-0 ml-1">
+              <span className="flex items-center gap-1.5 shrink-0 ml-2">
                 {isCompleted && (
                   <Check
-                    className="size-3 text-emerald-600 dark:text-emerald-400"
+                    className={`size-3.5 ${
+                      isActive ? "text-background" : "text-emerald-500"
+                    }`}
                     aria-label="Completed"
                   />
                 )}
                 {section.time && !isCompleted && (
-                  <span className="text-[10px] text-muted-foreground/60 font-mono">
+                  <span
+                    className={`text-[10.5px] font-mono ${
+                      isActive ? "text-background/70" : "text-muted-foreground/50"
+                    }`}
+                  >
                     {section.time.split(" ")[0]}
                   </span>
                 )}
@@ -87,11 +96,11 @@ export function DocSidebar({
         })}
       </nav>
 
-      <div className="mt-4 pt-3 border-t border-border px-2">
-        <div className="text-[11px] text-muted-foreground/75 leading-normal flex items-center justify-between">
+      <div className="mt-5 pt-3.5 border-t border-foreground/10 px-2.5">
+        <div className="text-xs text-muted-foreground flex items-center justify-between">
           <Link
             href="/home/"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors font-mono text-[11.5px]"
           >
             ← Return to Home
           </Link>

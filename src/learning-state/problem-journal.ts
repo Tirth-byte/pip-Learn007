@@ -82,8 +82,10 @@ export function getProblemJournalSnapshot(): ProblemJournalEntry[] {
   return currentEntries;
 }
 
+const EMPTY_PROBLEM_JOURNAL_ENTRIES: ProblemJournalEntry[] = [];
+
 export function getServerProblemJournalSnapshot(): ProblemJournalEntry[] {
-  return [];
+  return EMPTY_PROBLEM_JOURNAL_ENTRIES;
 }
 
 function subscribe(callback: () => void) {

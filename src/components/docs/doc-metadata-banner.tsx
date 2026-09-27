@@ -8,45 +8,47 @@ interface DocMetadataBannerProps {
 
 export function DocMetadataBanner({ metadata }: DocMetadataBannerProps) {
   return (
-    <header className="mb-7 pb-6 sm:mb-9 sm:pb-7 border-b border-border/70">
-      {/* Top metadata row: Section badge & time */}
-      <div className="flex flex-wrap items-center gap-2.5 text-xs text-muted-foreground mb-2.5">
-        <span className="inline-flex items-center px-2 py-0.5 rounded font-mono text-[11px] bg-primary/10 text-primary font-medium dark:bg-primary/15">
-          Section {metadata.section}
+    <header className="mb-10 pb-8 border-b border-foreground/10">
+      {/* Top editorial eyebrow */}
+      <div className="flex flex-wrap items-center gap-3 text-xs mb-4">
+        <span className="font-mono text-[11px] font-semibold tracking-[0.14em] uppercase text-muted-foreground">
+          Section {metadata.section} / 11
         </span>
-        <span className="text-muted-foreground/40 select-none">•</span>
-        <span className="inline-flex items-center gap-1 text-muted-foreground/80 font-mono text-[11px]">
-          <Clock className="h-3 w-3" />
+        <span className="text-foreground/20 select-none">•</span>
+        <span className="inline-flex items-center gap-1.5 text-muted-foreground font-mono text-[11px]">
+          <Clock className="size-3.5 text-muted-foreground/70" />
           <span>{metadata.estimated_time}</span>
         </span>
       </div>
 
-      {/* Main Title: Strong Presence */}
-      <h1 className="text-3xl sm:text-4xl lg:text-[2.65rem] font-bold tracking-tight text-foreground leading-[1.15] mb-5">
+      {/* Main Title: Editorial Scale */}
+      <h1 className="text-3xl sm:text-4xl lg:text-[2.85rem] font-semibold tracking-[-0.035em] text-foreground leading-[1.14] mb-6 text-balance">
         {metadata.title}
       </h1>
 
-      {/* Prerequisites & Outcomes: Visually Secondary */}
-      <div className="space-y-3 text-sm">
+      {/* Prerequisites & Outcomes: Restrained Editorial Brief */}
+      <div className="space-y-4 text-sm max-w-2xl">
         {metadata.prerequisites && (
-          <div className="text-[13px] text-muted-foreground/90 leading-relaxed">
-            <span className="font-semibold text-foreground/90 mr-1.5">Prerequisites:</span>
+          <div className="text-[13px] sm:text-[13.5px] text-muted-foreground leading-relaxed flex items-baseline gap-2">
+            <span className="font-semibold text-foreground/90 shrink-0 font-mono text-[11.5px] uppercase tracking-wider">
+              Prerequisites:
+            </span>
             <span>{metadata.prerequisites}</span>
           </div>
         )}
 
         {metadata.outcomes && metadata.outcomes.length > 0 && (
-          <div className="pt-1">
-            <div className="text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground/75 mb-1.5">
+          <div className="pt-2">
+            <div className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-2">
               Key Outcomes
             </div>
-            <ul className="space-y-1 text-[12.5px] sm:text-[13px] text-muted-foreground/90">
+            <ul className="space-y-1.5 text-[13px] sm:text-[13.5px] text-muted-foreground/95">
               {metadata.outcomes.map((outcome, idx) => (
-                <li key={idx} className="flex items-start gap-2">
-                  <span className="text-primary/70 mt-0.5 shrink-0 text-[10px] select-none">
-                    •
+                <li key={idx} className="flex items-start gap-2.5">
+                  <span className="text-foreground/40 mt-1 shrink-0 text-[10px] select-none">
+                    —
                   </span>
-                  <span className="leading-snug">{outcome}</span>
+                  <span className="leading-relaxed">{outcome}</span>
                 </li>
               ))}
             </ul>

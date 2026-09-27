@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { toast } from "sonner";
+import { usePathname } from "next/navigation";
 
 function comingSoonToast(label: string) {
   return (e: React.MouseEvent) => {
@@ -17,9 +18,13 @@ export default function MarketingLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isFullscreen = pathname === "/login";
+
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-[#191919] text-[#37352F] dark:text-[rgba(255,255,255,0.85)] font-sans antialiased">
       {/* Notion Top Navigation Bar */}
+      {!isFullscreen && (
       <header className="h-14 border-b border-[rgba(55,53,47,0.09)] dark:border-[rgba(255,255,255,0.09)] sticky top-0 bg-white/95 dark:bg-[#191919]/95 backdrop-blur-md z-50 w-full">
         <div className="flex items-center justify-between px-6 h-full max-w-7xl mx-auto">
           <div className="flex items-center gap-8">
@@ -82,10 +87,12 @@ export default function MarketingLayout({
           </nav>
         </div>
       </header>
+      )}
 
       <main className="flex-1 flex flex-col">{children}</main>
 
       {/* Notion Style Footer */}
+      {!isFullscreen && (
       <footer className="border-t border-[rgba(55,53,47,0.09)] dark:border-[rgba(255,255,255,0.09)] bg-white dark:bg-[#191919] pt-16 pb-16 px-6 text-xs text-[rgba(55,53,47,0.65)] dark:text-neutral-400">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           <div className="col-span-2 space-y-4">
@@ -133,6 +140,7 @@ export default function MarketingLayout({
           </div>
         </div>
       </footer>
+      )}
     </div>
   );
 }
